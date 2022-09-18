@@ -1,7 +1,7 @@
 package post
 
 import (
-	editorjs "github.com/micheleriva/editorjs-go"
+	"github.com/pathak107/coderahi-learn/pkg/editorjs"
 	"github.com/pathak107/coderahi-learn/pkg/utils"
 	"gorm.io/gorm"
 )
@@ -24,7 +24,7 @@ func CreatePost(db *gorm.DB, postDTO *CreatePostDTO) (uint, error) {
 	return post.ID, nil
 }
 
-func EditPost(db *gorm.DB, postDTO EditPostDTO) error {
+func EditPost(db *gorm.DB, postDTO *EditPostDTO) error {
 	post, err := FindPostByID(db, postDTO.PostID)
 	if err != nil {
 		return err

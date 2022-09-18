@@ -3,7 +3,7 @@ package course
 import (
 	"sort"
 
-	editorjs "github.com/micheleriva/editorjs-go"
+	"github.com/pathak107/coderahi-learn/pkg/editorjs"
 	"github.com/pathak107/coderahi-learn/pkg/post"
 	"github.com/pathak107/coderahi-learn/pkg/utils"
 	"gorm.io/gorm"
@@ -51,7 +51,10 @@ func FindCourseByID(db *gorm.DB, courseID uint, queryParams *QuerParamsCourse) (
 }
 
 func EditCourseByID(db *gorm.DB, courseDTO *EditCourseDTO) error {
-	course, err := FindCourseByID(db, courseDTO.CourseID)
+	course, err := FindCourseByID(db, courseDTO.CourseID, &QuerParamsCourse{
+		LoadSections:               false,
+		LoadSectionsAndSubsections: false,
+	})
 	if err != nil {
 		return err
 	}
@@ -78,6 +81,10 @@ func DeleteCourseByID(db *gorm.DB, courseID uint) error {
 func CreateSection(db *gorm.DB, sectionDTO *CreateSectionDTO) error {
 	var sections []Section
 	result := db.Find(&sections)
+	if result.Error != nil {
+		//TODO: log the result.Error here
+		return utils.NewUnexpectedServerError()
+	}
 	section := Section{
 		Title:       sectionDTO.Title,
 		Description: sectionDTO.Description,
@@ -122,6 +129,9 @@ func DeleteSectionByID(db *gorm.DB, sectionID uint) error {
 func CreateSubsection(db *gorm.DB, subsectionDTO *CreateSubsectionDTO) (uint, error) {
 	var subsections []Subsection
 	result := db.Find(&subsections)
+	if result.Error != nil {
+		return 0, utils.NewUnexpectedServerError()
+	}
 	postID, err := post.CreatePost(db, &post.CreatePostDTO{
 		Title:       subsectionDTO.Title,
 		Description: subsectionDTO.Description,

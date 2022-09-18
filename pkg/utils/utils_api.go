@@ -18,7 +18,7 @@ func (e *ApiError) StatusCode() int {
 func NewUnexpectedServerError() error {
 	return &ApiError{
 		statusCode: 500,
-		Err:        errors.New("some unexpectes error occurred"),
+		Err:        errors.New("some unexpected error occurred"),
 	}
 }
 

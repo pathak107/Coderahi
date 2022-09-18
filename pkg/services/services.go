@@ -1,12 +1,21 @@
 package services
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/pathak107/coderahi-learn/pkg/post"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewDatabaseService() (*gorm.DB, error) {
-	dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+	dbURL := os.Getenv("DB_URL")
+	dbUsername := os.Getenv("DB_USERNAME")
+	dbPassword := os.Getenv("DB_PASS")
+	dbPort := os.Getenv("DB_PORT")
+	dsn := fmt.Sprintf("postgres://%v:%v@%v:%v/postgres", dbUsername, dbPassword, dbURL, dbPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db.AutoMigrate(&post.Post{})
 	return db, err
 }
