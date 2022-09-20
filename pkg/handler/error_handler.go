@@ -7,10 +7,11 @@ import (
 
 func HandleError(err error) events.APIGatewayProxyResponse {
 	e, ok := err.(*utils.ApiError)
+	jsonBody, _ := NewErrRespHandler(err)
 	if ok {
 		return events.APIGatewayProxyResponse{
 			StatusCode: e.StatusCode(),
-			Body:       e.Err.Error(),
+			Body:       jsonBody,
 		}
 	}
 	return events.APIGatewayProxyResponse{

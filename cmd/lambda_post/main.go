@@ -1,8 +1,11 @@
 package main
 
 import (
+	"os"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/pathak107/coderahi-learn/pkg/auth"
 	"github.com/pathak107/coderahi-learn/pkg/handler"
 	"github.com/pathak107/coderahi-learn/pkg/services"
 )
@@ -14,10 +17,16 @@ func HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProx
 	}
 	h := handler.NewHandler(db)
 
+	authService, err := auth.NewJWTService(os.Getenv("JKS_URL"))
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
 	ApiResponse := events.APIGatewayProxyResponse{}
 	// Switch for identifying the HTTP request
 	switch request.HTTPMethod {
 	case "GET":
+		authService.VerifyJWTToken(request.Headers["Authorization"])
 		if request.PathParameters["post_id"] != "" {
 			data, err := h.FindPostByID(request.PathParameters["post_id"])
 			if err != nil {

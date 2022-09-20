@@ -3,13 +3,14 @@ module github.com/pathak107/coderahi-learn
 go 1.17
 
 require (
+	github.com/MicahParks/keyfunc v1.2.2
 	github.com/aws/aws-lambda-go v1.34.1
-	github.com/micheleriva/editorjs-go v0.0.5
 	gorm.io/driver/postgres v1.3.9
 	gorm.io/gorm v1.23.8
 )
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect

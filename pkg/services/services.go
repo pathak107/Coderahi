@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/pathak107/coderahi-learn/pkg/course"
 	"github.com/pathak107/coderahi-learn/pkg/post"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,6 +17,6 @@ func NewDatabaseService() (*gorm.DB, error) {
 	dbPort := os.Getenv("DB_PORT")
 	dsn := fmt.Sprintf("postgres://%v:%v@%v:%v/postgres", dbUsername, dbPassword, dbURL, dbPort)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	db.AutoMigrate(&post.Post{})
+	db.AutoMigrate(&post.Post{}, &course.Course{}, &course.Section{}, &course.Subsection{})
 	return db, err
 }
