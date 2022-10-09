@@ -3,15 +3,18 @@ package course
 import (
 	"sort"
 
+	"github.com/gosimple/slug"
+	"github.com/pathak107/coderahi-learn/pkg/dto"
 	"github.com/pathak107/coderahi-learn/pkg/editorjs"
 	"github.com/pathak107/coderahi-learn/pkg/post"
 	"github.com/pathak107/coderahi-learn/pkg/utils"
 	"gorm.io/gorm"
 )
 
-func CreateCourse(db *gorm.DB, courseDTO *CreateCourseDTO) error {
+func CreateCourse(db *gorm.DB, courseDTO *dto.CreateCourseDTO) (uint, error) {
 	course := Course{
 		Title:        courseDTO.Title,
+		Slug:         slug.Make(courseDTO.Title),
 		DescHTML:     utils.ToStringPtr(editorjs.HTML(courseDTO.DescBody)),
 		DescMarkdown: utils.ToStringPtr(editorjs.Markdown(courseDTO.DescBody)),
 		Cost:         courseDTO.Cost,
@@ -20,9 +23,9 @@ func CreateCourse(db *gorm.DB, courseDTO *CreateCourseDTO) error {
 	result := db.Create(&course)
 	if result.Error != nil {
 		//TODO: log the result.Error here
-		return utils.NewUnexpectedServerError()
+		return 0, utils.NewUnexpectedServerError()
 	}
-	return nil
+	return course.ID, nil
 }
 
 //find all courses
@@ -36,7 +39,7 @@ func FindAllCourse(db *gorm.DB) ([]Course, error) {
 }
 
 //find course by id
-func FindCourseByID(db *gorm.DB, courseID uint, queryParams *QuerParamsCourse) (Course, error) {
+func FindCourseByID(db *gorm.DB, courseID string, queryParams *QuerParamsCourse) (Course, error) {
 	var course Course
 	var result *gorm.DB
 	if queryParams.LoadSectionsAndSubsections {
@@ -50,8 +53,22 @@ func FindCourseByID(db *gorm.DB, courseID uint, queryParams *QuerParamsCourse) (
 	return course, nil
 }
 
-func EditCourseByID(db *gorm.DB, courseDTO *EditCourseDTO) error {
-	course, err := FindCourseByID(db, courseDTO.CourseID, &QuerParamsCourse{
+func FindCourseBySlug(db *gorm.DB, slug string, queryParams *QuerParamsCourse) (Course, error) {
+	var course Course
+	var result *gorm.DB
+	if queryParams.LoadSectionsAndSubsections {
+		result = db.Preload("Sections.Subsections").Preload("Sections").Where(&Course{Slug: slug}).First(&course)
+	} else if queryParams.LoadSections {
+		result = db.Preload("Sections").Where(&Course{Slug: slug}).First(&course)
+	}
+	if result.Error != nil {
+		return course, utils.NewNotFoundError(ErrCourseNotFound)
+	}
+	return course, nil
+}
+
+func EditCourseByID(db *gorm.DB, courseDTO *dto.EditCourseDTO, courseID string) error {
+	course, err := FindCourseByID(db, courseID, &QuerParamsCourse{
 		LoadSections:               false,
 		LoadSectionsAndSubsections: false,
 	})
@@ -70,7 +87,7 @@ func EditCourseByID(db *gorm.DB, courseDTO *EditCourseDTO) error {
 	return nil
 }
 
-func DeleteCourseByID(db *gorm.DB, courseID uint) error {
+func DeleteCourseByID(db *gorm.DB, courseID string) error {
 	result := db.Delete(&Course{}, courseID)
 	if result.Error != nil {
 		return utils.NewUnexpectedServerError()
@@ -78,12 +95,12 @@ func DeleteCourseByID(db *gorm.DB, courseID uint) error {
 	return nil
 }
 
-func CreateSection(db *gorm.DB, sectionDTO *CreateSectionDTO) error {
+func CreateSection(db *gorm.DB, sectionDTO *dto.CreateSectionDTO) (uint, error) {
 	var sections []Section
 	result := db.Find(&sections)
 	if result.Error != nil {
 		//TODO: log the result.Error here
-		return utils.NewUnexpectedServerError()
+		return 0, utils.NewUnexpectedServerError()
 	}
 	section := Section{
 		Title:       sectionDTO.Title,
@@ -95,14 +112,14 @@ func CreateSection(db *gorm.DB, sectionDTO *CreateSectionDTO) error {
 	result = db.Create(&section)
 	if result.Error != nil {
 		//TODO: log the result.Error here
-		return utils.NewUnexpectedServerError()
+		return 0, utils.NewUnexpectedServerError()
 	}
-	return nil
+	return section.ID, nil
 }
 
-func EditSectionByID(db *gorm.DB, sectionDTO *EditSectionDTO) error {
+func EditSectionByID(db *gorm.DB, sectionDTO *dto.EditSectionDTO, sectionID string) error {
 	var section Section
-	result := db.First(&section, sectionDTO.SectionID)
+	result := db.First(&section, sectionID)
 	if result.Error != nil {
 		return utils.NewNotFoundError(ErrSectionNotFound)
 	}
@@ -117,7 +134,7 @@ func EditSectionByID(db *gorm.DB, sectionDTO *EditSectionDTO) error {
 	return nil
 }
 
-func DeleteSectionByID(db *gorm.DB, sectionID uint) error {
+func DeleteSectionByID(db *gorm.DB, sectionID string) error {
 	//TODO: Maintain order after  deleteing
 	result := db.Delete(&Section{}, sectionID)
 	if result.Error != nil {
@@ -126,13 +143,13 @@ func DeleteSectionByID(db *gorm.DB, sectionID uint) error {
 	return nil
 }
 
-func CreateSubsection(db *gorm.DB, subsectionDTO *CreateSubsectionDTO) (uint, error) {
+func CreateSubsection(db *gorm.DB, subsectionDTO *dto.CreateSubsectionDTO) (uint, error) {
 	var subsections []Subsection
 	result := db.Find(&subsections)
 	if result.Error != nil {
 		return 0, utils.NewUnexpectedServerError()
 	}
-	postID, err := post.CreatePost(db, &post.CreatePostDTO{
+	postID, err := post.CreatePost(db, &dto.CreatePostDTO{
 		Title:       subsectionDTO.Title,
 		Description: subsectionDTO.Description,
 		IsBlogPost:  false,
@@ -157,9 +174,9 @@ func CreateSubsection(db *gorm.DB, subsectionDTO *CreateSubsectionDTO) (uint, er
 	return postID, nil
 }
 
-func EditSubsectionByID(db *gorm.DB, subsectionDTO *EditSubsectionDTO) error {
+func EditSubsectionByID(db *gorm.DB, subsectionDTO *dto.EditSubsectionDTO, subsectionID string) error {
 	var subsection Subsection
-	result := db.First(&subsection, subsectionDTO.SubsectionID)
+	result := db.First(&subsection, subsectionID)
 	if result.Error != nil {
 		return utils.NewNotFoundError(ErrSubsectionNotFound)
 	}
@@ -175,7 +192,7 @@ func EditSubsectionByID(db *gorm.DB, subsectionDTO *EditSubsectionDTO) error {
 	return nil
 }
 
-func DeleteSubsectionByID(db *gorm.DB, subsectionID uint) error {
+func DeleteSubsectionByID(db *gorm.DB, subsectionID string) error {
 	//TODO: Maintain order after  deleteing
 	var subsection Subsection
 	result := db.First(&subsection, subsectionID)
@@ -193,7 +210,7 @@ func DeleteSubsectionByID(db *gorm.DB, subsectionID uint) error {
 	return nil
 }
 
-func ChangeOrderOfSection(db *gorm.DB, orderDTO *ChangeOrderSectionDTO) error {
+func ChangeOrderOfSection(db *gorm.DB, orderDTO *dto.ChangeOrderSectionDTO) error {
 	var section Section
 	result := db.First(&section, orderDTO.SectionID)
 	if result.Error != nil {
@@ -237,7 +254,7 @@ func ChangeOrderOfSection(db *gorm.DB, orderDTO *ChangeOrderSectionDTO) error {
 
 }
 
-func ChangeOrderOfSubsection(db *gorm.DB, orderDTO *ChangeOrderSubsectionDTO) error {
+func ChangeOrderOfSubsection(db *gorm.DB, orderDTO *dto.ChangeOrderSubsectionDTO) error {
 	var subsection Subsection
 	result := db.First(&subsection, orderDTO.SubsectionID)
 	if result.Error != nil {

@@ -12,11 +12,8 @@ import (
 
 func NewDatabaseService() (*gorm.DB, error) {
 	dbURL := os.Getenv("DB_URL")
-	dbUsername := os.Getenv("DB_USERNAME")
-	dbPassword := os.Getenv("DB_PASS")
-	dbPort := os.Getenv("DB_PORT")
-	dsn := fmt.Sprintf("postgres://%v:%v@%v:%v/postgres", dbUsername, dbPassword, dbURL, dbPort)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	fmt.Println(dbURL)
+	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 	db.AutoMigrate(&post.Post{}, &course.Course{}, &course.Section{}, &course.Subsection{})
 	return db, err
 }

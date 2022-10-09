@@ -27,19 +27,6 @@ type Course struct {
 	//Comments
 }
 
-type CreateCourseDTO struct {
-	Title    string `json:"title"`
-	DescBody string `json:"desc_body"`
-	Cost     int    `json:"cost"`
-}
-
-type EditCourseDTO struct {
-	CourseID uint   `json:"course_id"`
-	Title    string `json:"title"`
-	DescBody string `json:"desc_body"`
-	Cost     int    `json:"cost"`
-}
-
 type Section struct {
 	gorm.Model
 	CourseID     uint
@@ -48,18 +35,6 @@ type Section struct {
 	ExpectedTime int //in minutes
 	Order        int
 	Subsections  []Subsection
-}
-
-type CreateSectionDTO struct {
-	CourseID    int    `json:"course_id"`
-	Title       string `json:"title"`
-	Description string `json:"desc"`
-}
-
-type EditSectionDTO struct {
-	SectionID   int    `json:"section_id"`
-	Title       string `json:"title"`
-	Description string `json:"desc"`
 }
 
 type Subsection struct {
@@ -72,35 +47,6 @@ type Subsection struct {
 	Order        int
 	Post         post.Post
 	// Video
-}
-
-type CreateSubsectionDTO struct {
-	SectionID   uint   `json:"section_id"`
-	Title       string `json:"title"`
-	Description string `json:"desc"`
-}
-
-type EditSubsectionDTO struct {
-	SectionID    uint   `json:"section_id"`
-	SubsectionID uint   `json:"subsection_id"`
-	Title        string `json:"title"`
-	Description  string `json:"desc"`
-	PostID       uint   `json:"post_id"`
-}
-
-type ChangeOrderSectionDTO struct {
-	SectionID uint `json:"section_id"`
-	Order     int  `json:"order"`
-}
-
-type ChangeOrderSubsectionDTO struct {
-	SubsectionID uint `json:"subsection_id"`
-	Order        int  `json:"order"`
-}
-
-type AddPostSubsectionDTO struct {
-	post.CreatePostDTO
-	SubsectionID uint `json:"subsection_id"`
 }
 
 type QuerParamsCourse struct {

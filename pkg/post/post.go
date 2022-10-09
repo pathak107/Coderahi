@@ -1,15 +1,18 @@
 package post
 
 import (
+	"github.com/gosimple/slug"
+	"github.com/pathak107/coderahi-learn/pkg/dto"
 	"github.com/pathak107/coderahi-learn/pkg/editorjs"
 	"github.com/pathak107/coderahi-learn/pkg/utils"
 	"gorm.io/gorm"
 )
 
-func CreatePost(db *gorm.DB, postDTO *CreatePostDTO) (uint, error) {
+func CreatePost(db *gorm.DB, postDTO *dto.CreatePostDTO) (uint, error) {
 	post := Post{
 		Title:       postDTO.Title,
 		Description: postDTO.Description,
+		Slug:        slug.Make(postDTO.Title),
 		ImageUrl:    utils.ToStringPtr(postDTO.ImageURL),
 		IsBlogPost:  postDTO.IsBlogPost,
 		Likes:       0,
@@ -24,13 +27,14 @@ func CreatePost(db *gorm.DB, postDTO *CreatePostDTO) (uint, error) {
 	return post.ID, nil
 }
 
-func EditPost(db *gorm.DB, postDTO *EditPostDTO) error {
-	post, err := FindPostByID(db, postDTO.PostID)
+func EditPost(db *gorm.DB, postDTO *dto.EditPostDTO, postID string) error {
+	post, err := FindPostByID(db, postID)
 	if err != nil {
 		return err
 	}
 	post.Title = postDTO.Title
 	post.Description = postDTO.Description
+	post.Slug = slug.Make(postDTO.Title)
 	post.MarkDown = utils.ToStringPtr(editorjs.Markdown(postDTO.Body))
 	post.HTMLBody = utils.ToStringPtr(editorjs.HTML(postDTO.Body))
 	post.ImageUrl = utils.ToStringPtr(postDTO.ImageURL)
@@ -52,7 +56,7 @@ func FindAllPosts(db *gorm.DB) ([]Post, error) {
 	return posts, nil
 }
 
-func FindPostByID(db *gorm.DB, postID uint) (Post, error) {
+func FindPostByID(db *gorm.DB, postID string) (Post, error) {
 	var post Post
 	result := db.First(&post, postID)
 	if result.Error != nil {
@@ -61,7 +65,16 @@ func FindPostByID(db *gorm.DB, postID uint) (Post, error) {
 	return post, nil
 }
 
-func DeletePostByID(db *gorm.DB, postID uint) error {
+func FindPostBySlug(db *gorm.DB, slug string) (Post, error) {
+	var post Post
+	result := db.Where(&Post{Slug: slug}).First(&post)
+	if result.Error != nil {
+		return post, utils.NewNotFoundError(ErrPostNotFound)
+	}
+	return post, nil
+}
+
+func DeletePostByID(db *gorm.DB, postID string) error {
 	result := db.Delete(&Post{}, postID)
 	if result.Error != nil {
 		return utils.NewUnexpectedServerError()
