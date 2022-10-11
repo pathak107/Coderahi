@@ -4,7 +4,7 @@ type CreatePostDTO struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
 	ImageURL    string
-	IsBlogPost  bool `json:"is_blog_post"`
+	SectionID   uint `json:"section_id"`
 }
 
 type EditPostDTO struct {
@@ -12,7 +12,6 @@ type EditPostDTO struct {
 	Description string `json:"description"`
 	ImageURL    string
 	Body        string `json:"editorjs_body"`
-	IsBlogPost  bool   `json:"is_blog_post"`
 }
 
 type CreateCourseDTO struct {
@@ -38,30 +37,7 @@ type EditSectionDTO struct {
 	Description string `json:"desc"`
 }
 
-type CreateSubsectionDTO struct {
-	SectionID   uint   `json:"section_id"`
-	Title       string `json:"title"`
-	Description string `json:"desc"`
-}
-
-type EditSubsectionDTO struct {
-	SectionID   uint   `json:"section_id"`
-	Title       string `json:"title"`
-	Description string `json:"desc"`
-	PostID      uint   `json:"post_id"`
-}
-
 type ChangeOrderSectionDTO struct {
 	SectionID uint `json:"section_id"`
 	Order     int  `json:"order"`
-}
-
-type ChangeOrderSubsectionDTO struct {
-	SubsectionID uint `json:"subsection_id"`
-	Order        int  `json:"order"`
-}
-
-type AddPostSubsectionDTO struct {
-	CreatePostDTO
-	SubsectionID uint `json:"subsection_id"`
 }

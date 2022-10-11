@@ -14,9 +14,7 @@ func CreatePost(db *gorm.DB, postDTO *dto.CreatePostDTO) (uint, error) {
 		Description: postDTO.Description,
 		Slug:        slug.Make(postDTO.Title),
 		ImageUrl:    utils.ToStringPtr(postDTO.ImageURL),
-		IsBlogPost:  postDTO.IsBlogPost,
-		Likes:       0,
-		Views:       0,
+		SectionID:   postDTO.SectionID,
 	}
 
 	result := db.Create(&post)
@@ -38,7 +36,6 @@ func EditPost(db *gorm.DB, postDTO *dto.EditPostDTO, postID string) error {
 	post.MarkDown = utils.ToStringPtr(editorjs.Markdown(postDTO.Body))
 	post.HTMLBody = utils.ToStringPtr(editorjs.HTML(postDTO.Body))
 	post.ImageUrl = utils.ToStringPtr(postDTO.ImageURL)
-	post.IsBlogPost = postDTO.IsBlogPost
 
 	result := db.Save(&post)
 	if result.Error != nil {

@@ -12,14 +12,12 @@ var (
 
 type Post struct {
 	gorm.Model
+	SectionID   uint
 	Title       string
 	Description string
 	Slug        string
 	HTMLBody    *string
 	MarkDown    *string
 	ImageUrl    *string
-	Likes       int
-	Views       int
-	IsBlogPost  bool
 	//Comments
 }

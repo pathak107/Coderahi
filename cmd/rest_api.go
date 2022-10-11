@@ -47,22 +47,27 @@ func main() {
 		{
 			post.GET("/", h.FindAllPosts)
 			post.GET("/:post_id", h.FindPostByID)
+			post.GET("/:slug", h.FindPostBySlug)
 			post.POST("/", h.CreatePost)
-			post.PATCH("/", h.EditPost)
+			post.PATCH("/:post_id", h.EditPost)
 			post.DELETE("/:post_id", h.DeletePost)
 		}
 
 		course := v1.Group("/course")
 		{
-			course.GET("/vm", func(ctx *gin.Context) {})
-		}
+			course.GET("/", h.FindAllCourses)
+			course.GET("/:course_id", h.FindCourseByID)
+			course.GET("/:slug", h.FindCourseBySlug)
+			course.POST("/", h.CreateCourse)
+			course.PATCH("/:course_id", h.EditCourse)
+			course.DELETE("/:course_id", h.DeleteCourse)
 
-		auth := v1.Group("/auth")
-		{
-			auth.POST("/login", func(ctx *gin.Context) {})
-			auth.POST("/register", func(ctx *gin.Context) {})
+			course.POST("/section", h.CreateSection)
+			course.PATCH("/section/:section_id", h.EditCourse)
+			course.DELETE("/section/:section_id", h.DeleteSectionByID)
+			course.PATCH("/section/order", h.ChangeSectionOrder)
 		}
 	}
 
-	r.Run(":3000")
+	r.Run(":8080")
 }

@@ -34,22 +34,11 @@ type Section struct {
 	Description  string
 	ExpectedTime int //in minutes
 	Order        int
-	Subsections  []Subsection
-}
-
-type Subsection struct {
-	gorm.Model
-	SectionID    uint
-	Title        string
-	Description  string
-	ExpectedTime int //in minutes
-	PostID       uint
-	Order        int
-	Post         post.Post
-	// Video
+	Posts        []post.Post
 }
 
 type QuerParamsCourse struct {
-	LoadSections               bool
-	LoadSectionsAndSubsections bool
+	LoadSections   bool
+	LoadPosts      bool
+	LoadPostTitles bool
 }
