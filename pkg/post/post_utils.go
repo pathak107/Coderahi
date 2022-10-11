@@ -16,6 +16,7 @@ type Post struct {
 	Title       string
 	Description string
 	Slug        string
+	Order       int
 	HTMLBody    *string
 	MarkDown    *string
 	ImageUrl    *string

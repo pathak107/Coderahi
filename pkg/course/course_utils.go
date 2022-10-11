@@ -24,6 +24,7 @@ type Course struct {
 	ExpectedTime int
 	Likes        int
 	Views        int
+	CategoryID   uint
 	//Comments
 }
 
@@ -41,4 +42,11 @@ type QuerParamsCourse struct {
 	LoadSections   bool
 	LoadPosts      bool
 	LoadPostTitles bool
+}
+
+type Category struct {
+	Name        string
+	Slug        string
+	Description string
+	Courses     []Course
 }
