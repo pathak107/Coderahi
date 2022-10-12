@@ -1,14 +1,26 @@
-import Editor from './components/editor';
-import SideBar from './components/SideBar';
+import Home from './pages/Home'
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
+import CourseForm from './components/Course/CourseForm';
+import Course from './pages/Course';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Course/>,
+  },
+]);
 
 function App() {
 
   return (
-    <div className="App">
-      <SideBar/>
-      <button className="btn">Button</button>
-      <Editor/>
-    </div>
+    <>
+      <RouterProvider router={router} />
+    </>
+
   );
 }
 

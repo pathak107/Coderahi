@@ -12,11 +12,10 @@ import (
 
 func CreateCourse(db *gorm.DB, courseDTO *dto.CreateCourseDTO) (uint, error) {
 	course := Course{
-		Title:        courseDTO.Title,
-		Slug:         slug.Make(courseDTO.Title),
-		DescHTML:     utils.ToStringPtr(editorjs.HTML(courseDTO.DescBody)),
-		DescMarkdown: utils.ToStringPtr(editorjs.Markdown(courseDTO.DescBody)),
-		Cost:         courseDTO.Cost,
+		Title:     courseDTO.Title,
+		Slug:      slug.Make(courseDTO.Title),
+		DescShort: courseDTO.DescShort,
+		Cost:      courseDTO.Cost,
 	}
 
 	result := db.Create(&course)
@@ -78,6 +77,8 @@ func EditCourseByID(db *gorm.DB, courseDTO *dto.EditCourseDTO, courseID string) 
 	course.Cost = courseDTO.Cost
 	course.DescMarkdown = utils.ToStringPtr(editorjs.Markdown(courseDTO.DescBody))
 	course.DescHTML = utils.ToStringPtr(editorjs.HTML(courseDTO.DescBody))
+	course.DescShort = courseDTO.DescShort
+	course.DescJson = utils.ToStringPtr(courseDTO.DescBody)
 
 	result := db.Save(&course)
 	if result.Error != nil {

@@ -17,7 +17,9 @@ type Course struct {
 	gorm.Model
 	Title        string
 	DescHTML     *string
+	DescJson     *string
 	DescMarkdown *string
+	DescShort    string
 	Slug         string
 	Cost         int
 	Sections     []Section

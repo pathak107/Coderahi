@@ -15,15 +15,16 @@ type EditPostDTO struct {
 }
 
 type CreateCourseDTO struct {
-	Title    string `json:"title"`
-	DescBody string `json:"desc_body"`
-	Cost     int    `json:"cost"`
+	Title     string `json:"title"`
+	DescShort string `json:"desc_short"`
+	Cost      int    `json:"cost"`
 }
 
 type EditCourseDTO struct {
-	Title    string `json:"title"`
-	DescBody string `json:"desc_body"`
-	Cost     int    `json:"cost"`
+	Title     string `json:"title"`
+	DescBody  string `json:"desc_body"`
+	DescShort string `json:"desc_short"`
+	Cost      int    `json:"cost"`
 }
 
 type CreateSectionDTO struct {
