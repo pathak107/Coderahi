@@ -2,6 +2,7 @@ package course
 
 import (
 	"sort"
+	"strconv"
 
 	"github.com/gosimple/slug"
 	"github.com/pathak107/coderahi-learn/pkg/dto"
@@ -33,7 +34,7 @@ func FindAllCourse(db *gorm.DB) ([]Course, error) {
 	if result.Error != nil {
 		return courses, utils.NewUnexpectedServerError()
 	}
-	return []Course{}, nil
+	return courses, nil
 }
 
 //find course by id
@@ -44,6 +45,8 @@ func FindCourseByID(db *gorm.DB, courseID string, queryParams *QuerParamsCourse)
 		result = db.Preload("Sections.Posts").Preload("Sections").First(&course, courseID)
 	} else if queryParams.LoadSections {
 		result = db.Preload("Sections").First(&course, courseID)
+	} else {
+		result = db.First(&course, courseID)
 	}
 	if result.Error != nil {
 		return course, utils.NewNotFoundError(ErrCourseNotFound)
@@ -74,11 +77,15 @@ func EditCourseByID(db *gorm.DB, courseDTO *dto.EditCourseDTO, courseID string) 
 		return err
 	}
 	course.Title = courseDTO.Title
+	course.Slug = slug.Make(courseDTO.Title)
 	course.Cost = courseDTO.Cost
-	course.DescMarkdown = utils.ToStringPtr(editorjs.Markdown(courseDTO.DescBody))
-	course.DescHTML = utils.ToStringPtr(editorjs.HTML(courseDTO.DescBody))
+
+	if courseDTO.DescBody != "" {
+		course.DescMarkdown = utils.ToStringPtr(editorjs.Markdown(courseDTO.DescBody))
+		course.DescHTML = utils.ToStringPtr(editorjs.HTML(courseDTO.DescBody))
+		course.DescJson = utils.ToStringPtr(courseDTO.DescBody)
+	}
 	course.DescShort = courseDTO.DescShort
-	course.DescJson = utils.ToStringPtr(courseDTO.DescBody)
 
 	result := db.Save(&course)
 	if result.Error != nil {
@@ -95,9 +102,25 @@ func DeleteCourseByID(db *gorm.DB, courseID string) error {
 	return nil
 }
 
+func FindSectionByID(db *gorm.DB, sectionID string) (Section, error) {
+	var section Section
+	result := db.First(&section, sectionID)
+
+	if result.Error != nil {
+		return section, utils.NewNotFoundError(ErrSectionNotFound)
+	}
+	return section, nil
+}
+
 func CreateSection(db *gorm.DB, sectionDTO *dto.CreateSectionDTO) (uint, error) {
+	// Check if course id is valid
+	_, err := FindCourseByID(db, strconv.Itoa(sectionDTO.CourseID), &QuerParamsCourse{LoadSections: false, LoadPosts: false})
+	if err != nil {
+		return 0, utils.NewNotFoundError(ErrCourseNotFound)
+	}
+
 	var sections []Section
-	result := db.Find(&sections)
+	result := db.Where(&Section{CourseID: uint(sectionDTO.CourseID)}).Find(&sections)
 	if result.Error != nil {
 		//TODO: log the result.Error here
 		return 0, utils.NewUnexpectedServerError()
@@ -126,6 +149,7 @@ func EditSectionByID(db *gorm.DB, sectionDTO *dto.EditSectionDTO, sectionID stri
 
 	section.Title = sectionDTO.Title
 	section.Description = sectionDTO.Description
+	section.ExpectedTime = sectionDTO.ExpectedTime
 
 	result = db.Save(&section)
 	if result.Error != nil {

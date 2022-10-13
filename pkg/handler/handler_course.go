@@ -26,7 +26,7 @@ func (h *Handler) FindCourseByID(ctx *gin.Context) {
 	query := &course.QuerParamsCourse{}
 	if ctx.DefaultQuery("section", "false") == "true" {
 		query.LoadSections = true
-		if ctx.DefaultQuery("subsection", "false") == "true" {
+		if ctx.DefaultQuery("post", "false") == "true" {
 			query.LoadPosts = true
 		}
 	}

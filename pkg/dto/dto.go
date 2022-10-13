@@ -3,15 +3,13 @@ package dto
 type CreatePostDTO struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
-	ImageURL    string
-	SectionID   uint `json:"section_id"`
+	SectionID   uint   `json:"section_id"`
 }
 
 type EditPostDTO struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	ImageURL    string
-	Body        string `json:"editorjs_body"`
+	Body        string `json:"body"`
 }
 
 type CreateCourseDTO struct {
@@ -34,8 +32,9 @@ type CreateSectionDTO struct {
 }
 
 type EditSectionDTO struct {
-	Title       string `json:"title"`
-	Description string `json:"desc"`
+	Title        string `json:"title"`
+	Description  string `json:"desc"`
+	ExpectedTime int    `json:"expected_time"`
 }
 
 type ChangeOrderSectionDTO struct {

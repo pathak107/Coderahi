@@ -19,6 +19,6 @@ type Post struct {
 	Order       int
 	HTMLBody    *string
 	MarkDown    *string
-	ImageUrl    *string
+	BodyJson    *string
 	//Comments
 }

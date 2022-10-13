@@ -8,9 +8,8 @@ import (
 )
 
 var (
-	ErrCourseNotFound     = errors.New("course not found")
-	ErrSectionNotFound    = errors.New("section not found")
-	ErrSubsectionNotFound = errors.New("subsection not found")
+	ErrCourseNotFound  = errors.New("course not found")
+	ErrSectionNotFound = errors.New("section not found")
 )
 
 type Course struct {

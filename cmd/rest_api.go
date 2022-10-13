@@ -39,31 +39,36 @@ func main() {
 	h := handler.NewHandler(db)
 	// Routes setup
 	r := gin.Default()
+
+	r.Use(middleware.CORSMiddleware())
 	r.Static("/static", "./public")
 	r.Use(middleware.ErrorHandler())
 	v1 := r.Group("/api/v1")
 	{
+		v1.Use(middleware.CORSMiddleware())
 		post := v1.Group("/post")
 		{
-			post.GET("/", h.FindAllPosts)
+			post.Use(middleware.ErrorHandler())
+			post.GET("", h.FindAllPosts)
 			post.GET("/:post_id", h.FindPostByID)
-			post.GET("/:slug", h.FindPostBySlug)
-			post.POST("/", h.CreatePost)
+			// post.GET("/:slug", h.FindPostBySlug)
+			post.POST("", h.CreatePost)
 			post.PATCH("/:post_id", h.EditPost)
 			post.DELETE("/:post_id", h.DeletePost)
 		}
 
 		course := v1.Group("/course")
 		{
-			course.GET("/", h.FindAllCourses)
+			course.Use(middleware.CORSMiddleware())
+			course.GET("", h.FindAllCourses)
 			course.GET("/:course_id", h.FindCourseByID)
-			course.GET("/:slug", h.FindCourseBySlug)
-			course.POST("/", h.CreateCourse)
+			// course.GET("/:slug", h.FindCourseBySlug)
+			course.POST("", h.CreateCourse)
 			course.PATCH("/:course_id", h.EditCourse)
 			course.DELETE("/:course_id", h.DeleteCourse)
 
 			course.POST("/section", h.CreateSection)
-			course.PATCH("/section/:section_id", h.EditCourse)
+			course.PATCH("/section/:section_id", h.EditSectionByID)
 			course.DELETE("/section/:section_id", h.DeleteSectionByID)
 			course.PATCH("/section/order", h.ChangeSectionOrder)
 		}
