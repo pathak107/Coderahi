@@ -15,6 +15,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import CourseForm from './components/Course/CourseForm';
 import Course from './pages/Course';
+import CourseList from './pages/CourseList';
+import ModalContextProvider from './context/modalContext';
+import ConfirmModalCtxProvider, { ConfirmModalCtx } from './context/confirmModalCtx';
 
 const queryClient = new QueryClient()
 
@@ -27,6 +30,14 @@ const router = createBrowserRouter([
     path: "/course/:course_id",
     element: <Course />,
   },
+  {
+    path: "/course/",
+    element: <CourseList />,
+  },
+  {
+    path: "/course/:course_id/post/:post_id",
+    element: <Course />,
+  },
 ]);
 
 function App() {
@@ -34,8 +45,12 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} />
-        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={true} />
+        <ModalContextProvider>
+          <ConfirmModalCtxProvider>
+            <RouterProvider router={router} />
+          </ConfirmModalCtxProvider>
+        </ModalContextProvider>
       </QueryClientProvider>
     </>
   );

@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import { ModalContext } from "../../context/modalContext";
+import { SectionContext } from "../../context/sectionContext";
+import SectionForm from "../Course/SectionForm";
 
-const GeneralModal = ({children}) => {
-    const {state, actions}= useContext(ModalContext)
+const SectionModal = ({children}) => {
+    const {state, actions}= useContext(SectionContext)
     return (
         <div className={`modal ${state.isOpen?"modal-open":""}`} >
             <div className="modal-box relative">
@@ -13,10 +14,10 @@ const GeneralModal = ({children}) => {
                 >
                     ✕
                 </a>
-                {children}
+                <SectionForm/>
             </div>
         </div>
     );
 }
 
-export default GeneralModal;
+export default SectionModal;

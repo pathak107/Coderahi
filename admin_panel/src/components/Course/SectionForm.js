@@ -1,54 +1,57 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { createSection, editSection } from '../../services/api_service'
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SectionContext } from "../../context/sectionContext";
 
-const SectionForm = ({ sectionInfo }) => {
-    console.log(sectionInfo)
-    const [title, setTitle] = useState(sectionInfo.title)
-    const [desc, setDesc] = useState(sectionInfo.desc)
+const SectionForm = () => {
+    const { state, actions } = useContext(SectionContext)
 
-    const queryClient =  useQueryClient()
+    const queryClient = useQueryClient()
 
-    const mutation = useMutation(sectionInfo.edit? editSection: createSection, {
+    const mutation = useMutation(state.edit ? editSection : createSection, {
         onError: (error, variables, context) => {
             // An error happened!
             console.log(error)
         },
         onSuccess: ({ data }, variables, context) => {
             queryClient.invalidateQueries(["getOneCourse"])
+            actions.setTitle("")
+            actions.setDesc("")
         },
     })
 
     return (
         <div className="">
             <form className="flex flex-col justify-center">
-                <input type="text" placeholder="Title" className="input input-bordered w-full max-w-xs" value={title}
+                <input type="text" placeholder="Title" className="input input-bordered w-full max-w-xs" value={state.title}
                     onChange={(e) => {
-                        setTitle(e.target.value)
+                        actions.setTitle(e.target.value)
                     }}
                 />
-                <textarea className="textarea textarea-bordered" placeholder="Description" value={desc}
+                <textarea className="textarea textarea-bordered" placeholder="Description" value={state.desc}
                     onChange={(e) => {
-                        setDesc(e.target.value)
+                        actions.setDesc(e.target.value)
                     }}
                 >
                 </textarea>
             </form>
-            <a href="#" className="btn"
-                onClick={()=>{
-                    if (sectionInfo.edit==true){
+            <a className="btn"
+                onClick={() => {
+                    if (state.edit == true) {
                         mutation.mutate({
-                            section_id: sectionInfo.sectionID,
-                            title,
-                            desc,
+                            section_id: state.sectionID,
+                            title: state.title,
+                            desc: state.desc,
                         }, "edit-section")
-                    }else{
+                    } else {
                         mutation.mutate({
-                            title,
-                            desc,
-                            course_id: sectionInfo.courseID
-                        }, "create-section")}
+                            title: state.title,
+                            desc: state.desc,
+                            course_id: state.courseID
+                        }, "create-section")
                     }
+                    actions.closeModal()
+                }
                 }
             >
                 Save

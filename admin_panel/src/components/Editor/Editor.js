@@ -1,29 +1,16 @@
 import EditorJS from '@editorjs/editorjs';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import Header from '@editorjs/header';
-
-const DEFAULT_INITIAL_DATA = () => {
-    return {
-        "time": new Date().getTime(),
-        "blocks": [
-            {
-                "type": "header",
-                "data": {
-                    "text": "This is my awesome editor!",
-                    "level": 1
-                }
-            },
-        ]
-    }
-}
+import { EditorContext } from '../../context/editorCtx';
 
 const EDITTOR_HOLDER_ID = 'editorjs';
 
 
 function Editor() {
     const editorInstance =  useRef(null)
-    const [editorData, setEditorData] = useState(DEFAULT_INITIAL_DATA);
+
+    const {state, actions}= useContext(EditorContext)
 
     useEffect(()=>{
         console.log("Asdsad")
@@ -40,13 +27,12 @@ function Editor() {
         const editor = new EditorJS({
             holder: EDITTOR_HOLDER_ID,
             logLevel: "ERROR",
-            data: editorData,
+            data: state.content,
             onReady:()=>{
                 editorInstance.current= editor
             },
             onChange: async () => {
-                const res= await saveEditorData()
-                setEditorData(res)
+                saveEditorData()
             },
             autofocus: true,
             tools: {
@@ -57,13 +43,12 @@ function Editor() {
 
     const saveEditorData= async ()=>{
         const res= await editorInstance.current.save()
-        console.log(res)
-        return res
+        actions.setContent(res)
     }
 
     return (
         <>
-            <div >
+            <div className='border-2 border-neutral-300 prose dark:prose-invert max-w-none'>
                 <div id={EDITTOR_HOLDER_ID} ref={editorInstance}/>
             </div>
 

@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import { ModalContext } from "../../context/modalContext";
+import { PostContext } from "../../context/postContext";
+import PostForm from "../Course/PostForm";
 
-const GeneralModal = ({children}) => {
-    const {state, actions}= useContext(ModalContext)
+const PostModal = ({children}) => {
+    const {state, actions}= useContext(PostContext)
     return (
         <div className={`modal ${state.isOpen?"modal-open":""}`} >
             <div className="modal-box relative">
@@ -13,10 +14,10 @@ const GeneralModal = ({children}) => {
                 >
                     ✕
                 </a>
-                {children}
+                <PostForm/>
             </div>
         </div>
     );
 }
 
-export default GeneralModal;
+export default PostModal;
