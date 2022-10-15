@@ -41,7 +41,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(middleware.CORSMiddleware())
-	r.Static("/static", "./public")
+	r.Static("/static/public/", "../public/")
 	r.Use(middleware.ErrorHandler())
 	v1 := r.Group("/api/v1")
 	{
@@ -55,6 +55,7 @@ func main() {
 			post.POST("", h.CreatePost)
 			post.PATCH("/:post_id", h.EditPost)
 			post.DELETE("/:post_id", h.DeletePost)
+			post.PATCH("/change/order", h.ChangePostOrder)
 		}
 
 		course := v1.Group("/course")
@@ -71,6 +72,8 @@ func main() {
 			course.PATCH("/section/:section_id", h.EditSectionByID)
 			course.DELETE("/section/:section_id", h.DeleteSectionByID)
 			course.PATCH("/section/order", h.ChangeSectionOrder)
+
+			course.POST("/upload/image/:course_id", h.UploadImageHandler)
 		}
 	}
 

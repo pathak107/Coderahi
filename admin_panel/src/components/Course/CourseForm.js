@@ -3,8 +3,9 @@ import Editor from "../Editor/Editor";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { editCourse } from "../../services/api_service";
 import { EditorContext } from "../../context/editorCtx";
+import ImageUpload from "../ImageUpload/ImageUpload";
 
-const CourseForm = ({course}) => {
+const CourseForm = ({course, initialData}) => {
     const [title, setTitle]=useState(course.Title)
     const [desc, setDesc]=useState(course.DescShort)
     const [cost, setCost]=useState(course.Cost)
@@ -25,7 +26,8 @@ const CourseForm = ({course}) => {
 
     return (
         <div className="">
-            <figure><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--o_lXvfhK--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/a0gvmzph343m9wvjys6h.png"></img></figure>
+            <h1 className="text-4xl">Course Details</h1>
+            <ImageUpload imageURL={course.ImageURL} course_id={course.ID}/>
             <form className="flex flex-col justify-center">
                 <input type="text" placeholder="Title" className="input input-bordered w-full max-w-xs" value={title}
                     onChange={(e)=>{
@@ -45,7 +47,7 @@ const CourseForm = ({course}) => {
                 </textarea>
             </form>
             <div className="w-screen">
-                <Editor/>
+                <Editor initialData={JSON.parse(initialData)}/>
             </div>
             <button className="btn"
                 onClick={()=>{

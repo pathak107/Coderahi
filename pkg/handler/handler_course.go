@@ -43,28 +43,6 @@ func (h *Handler) FindCourseByID(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) FindCourseBySlug(ctx *gin.Context) {
-	slug := ctx.Param("slug")
-	query := &course.QuerParamsCourse{}
-	if ctx.DefaultQuery("section", "false") == "true" {
-		query.LoadSections = true
-		if ctx.DefaultQuery("post", "false") == "true" {
-			query.LoadPosts = true
-		}
-	}
-
-	course, err := course.FindCourseBySlug(h.db, slug, query)
-	if err != nil {
-		ctx.Error(err)
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"data": gin.H{
-			"course": course,
-		},
-	})
-}
-
 func (h *Handler) CreateCourse(ctx *gin.Context) {
 	var createCourseDTO dto.CreateCourseDTO
 	if err := ctx.ShouldBind(&createCourseDTO); err != nil {

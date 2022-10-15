@@ -33,7 +33,10 @@ export const editCourse = async ({ title, desc, cost, body, course_id }) => {
     })
     return res
 }
-export const deleteCourse = () => { }
+export const deleteCourse = async (course_id) => {
+    const res = await instance.delete(`course/${course_id}`)
+    return res
+}
 
 export const getPostByID = async (post_id) => {
     const res = await instance.get(`post/${post_id}`)
@@ -56,6 +59,14 @@ export const editPost = async ({ post_id, title, desc }) => {
     })
     return res
 }
+
+export const editPostBody = async ({ body, post_id }) => {
+    const res = await instance.patch(`post/${post_id}`, {
+        body: JSON.stringify(body)
+    })
+    return res
+}
+
 export const deletePost = async (post_id) => {
     const res = await instance.delete(`post/${post_id}`)
     return res
@@ -78,5 +89,16 @@ export const editSection = async ({ section_id, title, desc }) => {
 }
 export const deleteSection = async (section_id) => {
     const res = await instance.delete(`course/section/${section_id}`)
+    return res
+}
+
+export const uploadCourseImage = async ({file, course_id})=>{
+    let formData = new FormData()
+    formData.append("file", file)
+    const res = await instance.post(`course/upload/image/${course_id}`, formData, {
+        headers:  {
+            "Content-Type": "multipart/form-data",
+          }
+    })
     return res
 }

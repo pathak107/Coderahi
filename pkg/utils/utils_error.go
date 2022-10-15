@@ -28,3 +28,10 @@ func NewNotFoundError(err error) error {
 		Err:        err,
 	}
 }
+
+func NewFileNotUploadedError() error {
+	return &ApiError{
+		statusCode: 400,
+		Err:        errors.New("no file provided to upload"),
+	}
+}

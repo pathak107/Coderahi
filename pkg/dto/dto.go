@@ -2,8 +2,8 @@ package dto
 
 type CreatePostDTO struct {
 	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	SectionID   uint   `json:"section_id"`
+	Description string `json:"description"`
+	SectionID   uint   `json:"section_id" binding:"required"`
 }
 
 type EditPostDTO struct {
@@ -13,7 +13,7 @@ type EditPostDTO struct {
 }
 
 type CreateCourseDTO struct {
-	Title     string `json:"title"`
+	Title     string `json:"title" binding:"required"`
 	DescShort string `json:"desc_short"`
 	Cost      int    `json:"cost"`
 }
@@ -26,8 +26,8 @@ type EditCourseDTO struct {
 }
 
 type CreateSectionDTO struct {
-	CourseID    int    `json:"course_id"`
-	Title       string `json:"title"`
+	CourseID    int    `json:"course_id" binding:"required"`
+	Title       string `json:"title" binding:"required"`
 	Description string `json:"desc"`
 }
 
@@ -38,6 +38,11 @@ type EditSectionDTO struct {
 }
 
 type ChangeOrderSectionDTO struct {
-	SectionID uint `json:"section_id"`
-	Order     int  `json:"order"`
+	SectionID uint `json:"section_id" binding:"required"`
+	Order     int  `json:"order" binding:"required"`
+}
+
+type ChangeOrderPostDTO struct {
+	PostID uint `json:"post_id" binding:"required"`
+	Order  int  `json:"order" binding:"required"`
 }

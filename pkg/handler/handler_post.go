@@ -36,20 +36,6 @@ func (h *Handler) FindPostByID(ctx *gin.Context) {
 	})
 }
 
-func (h *Handler) FindPostBySlug(ctx *gin.Context) {
-	slug := ctx.Param("slug")
-	post, err := post.FindPostBySlug(h.db, slug)
-	if err != nil {
-		ctx.Error(err)
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"data": gin.H{
-			"post": post,
-		},
-	})
-}
-
 func (h *Handler) CreatePost(ctx *gin.Context) {
 	var createPostDTO dto.CreatePostDTO
 	if err := ctx.ShouldBind(&createPostDTO); err != nil {
@@ -96,5 +82,21 @@ func (h *Handler) EditPost(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": "post saved succesfully",
+	})
+}
+
+func (h *Handler) ChangePostOrder(ctx *gin.Context) {
+	var changeOrderDTO dto.ChangeOrderPostDTO
+	if err := ctx.ShouldBind(&changeOrderDTO); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	err := post.ChangeOrderOfPost(h.db, &changeOrderDTO)
+	if err != nil {
+		ctx.Error(err)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": "changed post order successfully",
 	})
 }

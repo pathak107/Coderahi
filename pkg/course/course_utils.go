@@ -2,9 +2,9 @@ package course
 
 import (
 	"errors"
+	"sort"
 
-	"github.com/pathak107/coderahi-learn/pkg/post"
-	"gorm.io/gorm"
+	"github.com/pathak107/coderahi-learn/pkg/models"
 )
 
 var (
@@ -12,42 +12,15 @@ var (
 	ErrSectionNotFound = errors.New("section not found")
 )
 
-type Course struct {
-	gorm.Model
-	Title        string
-	DescHTML     *string
-	DescJson     *string
-	DescMarkdown *string
-	DescShort    string
-	Slug         string
-	Cost         int
-	Sections     []Section
-	ExpectedTime int
-	Likes        int
-	Views        int
-	CategoryID   uint
-	//Comments
-}
-
-type Section struct {
-	gorm.Model
-	CourseID     uint
-	Title        string
-	Description  string
-	ExpectedTime int //in minutes
-	Order        int
-	Posts        []post.Post
-}
-
 type QuerParamsCourse struct {
 	LoadSections   bool
 	LoadPosts      bool
 	LoadPostTitles bool
 }
 
-type Category struct {
-	Name        string
-	Slug        string
-	Description string
-	Courses     []Course
+func sortSectionsInCourse(course models.Course) models.Course {
+	sort.SliceStable(course.Sections, func(i, j int) bool {
+		return course.Sections[i].Order < course.Sections[j].Order
+	})
+	return course
 }

@@ -1,6 +1,10 @@
 package utils
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"path/filepath"
+	"runtime"
+)
 
 func ToStringPtr(str string) *string {
 	if str == "" {
@@ -21,4 +25,17 @@ func ToJsonString(key string, data interface{}) string {
 	jsonMap[key] = data
 	jsonStr, _ := json.Marshal(jsonMap)
 	return string(jsonStr)
+}
+
+func getCurrDir() string {
+	_, filename, _, _ := runtime.Caller(0)
+	return filepath.Dir(filename)
+}
+
+func GetImagesDir() string {
+	return filepath.Join(getCurrDir(), "../", "../", "public", "images") + "/"
+}
+
+func GetPublicDir() string {
+	return filepath.Join(getCurrDir(), "../", "../", "public") + "/"
 }

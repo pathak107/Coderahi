@@ -7,19 +7,21 @@ import { EditorContext } from '../../context/editorCtx';
 const EDITTOR_HOLDER_ID = 'editorjs';
 
 
-function Editor() {
+function Editor({initialData}) {
     const editorInstance =  useRef(null)
 
     const {state, actions}= useContext(EditorContext)
 
     useEffect(()=>{
-        console.log("Asdsad")
         if (!editorInstance.current){
-            console.log("As")
             initEditor()
         }
+
         return ()=>{
-            editorInstance.current=null
+            if (editorInstance.current){
+                editorInstance.current.destroy()
+                editorInstance.current=null
+            }
         }
     },[])
 
@@ -27,11 +29,11 @@ function Editor() {
         const editor = new EditorJS({
             holder: EDITTOR_HOLDER_ID,
             logLevel: "ERROR",
-            data: state.content,
+            data: initialData,
             onReady:()=>{
                 editorInstance.current= editor
             },
-            onChange: async () => {
+            onChange: async (api, e) => {
                 saveEditorData()
             },
             autofocus: true,
@@ -49,7 +51,7 @@ function Editor() {
     return (
         <>
             <div className='border-2 border-neutral-300 prose dark:prose-invert max-w-none'>
-                <div id={EDITTOR_HOLDER_ID} ref={editorInstance}/>
+                <div id={EDITTOR_HOLDER_ID}/>
             </div>
 
         </>

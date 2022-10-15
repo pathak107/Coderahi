@@ -1,26 +1,44 @@
 import Editor from "../Editor/Editor";
-import { useQuery } from "@tanstack/react-query";
-import { getPostByID } from "../../services/api_service";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getPostByID, editPost, editPostBody } from "../../services/api_service";
 import EditorContextProvider, { EditorContext } from "../../context/editorCtx"
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const PostEditor = ({postID}) => {
-    const { isLoading, isError, data, error } = useQuery(['getOnePost'], () => getPostByID(postID))
+const PostEditor = ({postID, initialData}) => {
+    const queryClient = useQueryClient()
     const editorCtx = useContext(EditorContext)
 
-    if (isLoading) {
-        return (
-            <>
-                <div className="radial-progress" />
-            </>
-        )
-    }
+    const mutation = useMutation(editPostBody, {
+        onError: (error, variables, context) => {
+            // An error happened!
+            console.log(error)
+        },
+        onSuccess: (data , variables, context) => {
 
-    // On success loading of data, editorCtx.setContent()
+        },
+    })
+
+    useEffect(()=>{
+        console.log("post editor mounted")
+        return ()=>{
+            queryClient.invalidateQueries([`getOnePost-${postID}`])
+        }
+    },[])
 
     return (
         <>
-            <Editor/>
+            <button className="btn"
+                onClick={()=>{
+                    mutation.mutate({
+                        body: editorCtx.state.content,
+                        post_id: postID
+                    }, "edit-post-body")
+                }}
+            >
+                Save
+            </button>
+            <Editor initialData={JSON.parse(initialData)}/>
         </>
     );
 }

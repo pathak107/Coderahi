@@ -19,7 +19,7 @@ const SectionContextProvider = ({children}) => {
             console.log(error)
         },
         onSuccess: ({ data }, variables, context) => {
-            queryClient.invalidateQueries(["getOneCourse"])
+            queryClient.invalidateQueries([`getOneCourse`])
         },
     })
 
