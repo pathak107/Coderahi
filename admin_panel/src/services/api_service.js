@@ -103,11 +103,19 @@ export const uploadCourseImage = async ({file, course_id})=>{
     return res
 }
 
-export const changeOrderOfPost = async ({post_id, order}) =>{
+export const updateOrderOfPost = async ({post_id, order}) =>{
     console.log(post_id)
     console.log(order)
     const res = await instance.patch(`post/change/order`, {
         post_id,
+        order
+    })
+    return res
+}
+
+export const updateOrderOfSection = async ({section_id, order}) =>{
+    const res = await instance.patch(`course/section/order`, {
+        section_id,
         order
     })
     return res

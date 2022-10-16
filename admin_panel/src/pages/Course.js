@@ -12,7 +12,7 @@ import EditorContextProvider from "../context/editorCtx";
 function Course() {
     const { course_id, post_id } = useParams()
 
-    const courseQuery = useQuery([`getOneCourse`], () => getCourseByIDWithSectionsAndPosts(course_id))
+    const courseQuery = useQuery([`getOneCourse`], () => getCourseByIDWithSectionsAndPosts(course_id), {cacheTime: 0})
     const postQuery = useQuery([`getOnePost-${post_id}`], () => getPostByID(post_id), {enabled: post_id? true: false, cacheTime:0})
 
 

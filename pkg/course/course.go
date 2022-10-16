@@ -64,6 +64,27 @@ func FindCourseByID(db *gorm.DB, courseID string, queryParams *QuerParamsCourse)
 	return course, nil
 }
 
+func FindCourseBySlug(db *gorm.DB, slug string, queryParams *QuerParamsCourse) (models.Course, error) {
+	var course models.Course
+	var result *gorm.DB
+	if queryParams.LoadPosts {
+		result = db.Preload("Sections.Posts").Preload("Sections").Where(&models.Course{Slug: slug}).First(&course)
+		course = sortSectionsInCourse(course)
+	} else if queryParams.LoadSections {
+		result = db.Preload("Sections").Where(&models.Course{Slug: slug}).First(&course)
+		course = sortSectionsInCourse(course)
+	} else {
+		result = db.Where(&models.Course{Slug: slug}).First(&course)
+	}
+
+	// sorting the sections
+	if result.Error != nil {
+		logger.Println(result.Error)
+		return course, utils.NewNotFoundError(ErrCourseNotFound)
+	}
+	return course, nil
+}
+
 func EditCourseByID(db *gorm.DB, courseDTO *dto.EditCourseDTO, courseID string) error {
 	course, err := FindCourseByID(db, courseID, &QuerParamsCourse{
 		LoadSections: false,

@@ -6,15 +6,15 @@ import PostCard from './PostCard';
 import { useContext, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { changeOrderOfPost } from '../../../services/api_service';
+import { updateOrderOfPost } from '../../../services/api_service';
 
-const SectionCard = ({ section, course_id }) => {
+const SectionCard = ({ section, course_id, provided, innerRef }) => {
     const postModalCtx = useContext(PostContext)
     const confirmModalCtx = useContext(ConfirmModalCtx)
     const sectionModalCtx = useContext(SectionContext)
 
     const queryClient = useQueryClient()
-    const mutation = useMutation(changeOrderOfPost, {
+    const mutation = useMutation(updateOrderOfPost, {
         onError: (error, variables, context) => {
             // An error happened!
             console.log(error)
@@ -44,13 +44,11 @@ const SectionCard = ({ section, course_id }) => {
         setPosts(items)
 
         // make a request 
-        console.log(changePostID)
-        console.log(e.destination.index)
         mutation.mutate({post_id: changePostID, order: e.destination.index}, 'change-post-order')
     }
 
     return (
-        <div className="section">
+        <div className="section" {...provided.draggableProps} {...provided.dragHandleProps} ref={innerRef}>
             <div className="section-title text-base font-medium flex flex-row">
                 <p>{section.Order+1} {section.Title}</p>
                 <a className="btn btn-sm self-end"
