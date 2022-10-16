@@ -144,19 +144,19 @@ func ChangeOrderOfPost(db *gorm.DB, orderDTO *dto.ChangeOrderPostDTO) error {
 		return utils.NewUnexpectedServerError()
 	}
 
-	if post.Order > orderDTO.Order {
-		for i := orderDTO.Order; i <= post.Order-1; i++ {
+	if post.Order > utils.ToInt(orderDTO.Order) {
+		for i := utils.ToInt(orderDTO.Order); i <= post.Order-1; i++ {
 			posts[i].Order++
 		}
 	}
 
-	if post.Order < orderDTO.Order {
-		for i := orderDTO.Order; i > post.Order; i-- {
+	if post.Order < utils.ToInt(orderDTO.Order) {
+		for i := utils.ToInt(orderDTO.Order); i > post.Order; i-- {
 			posts[i].Order--
 		}
 	}
 
-	post.Order = orderDTO.Order
+	post.Order = utils.ToInt(orderDTO.Order)
 	result = db.Save(&posts)
 	if result.Error != nil {
 		logger.Println(result.Error)

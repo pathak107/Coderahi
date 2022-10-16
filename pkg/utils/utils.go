@@ -20,6 +20,17 @@ func ToString(str *string) string {
 	return *str
 }
 
+func ToIntPtr(num int) *int {
+	return &num
+}
+
+func ToInt(num *int) int {
+	if num == nil {
+		return 0
+	}
+	return *num
+}
+
 func ToJsonString(key string, data interface{}) string {
 	jsonMap := make(map[string]interface{})
 	jsonMap[key] = data

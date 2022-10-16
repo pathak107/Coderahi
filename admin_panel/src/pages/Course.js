@@ -1,5 +1,5 @@
 import CourseForm from "../components/Course/CourseForm";
-import CourseSidebar from "../components/Course/CourseSidebar";
+import CourseSidebar from "../components/Course/CourseSideBar/CourseSidebar";
 import MainContent from "../components/MainContent";
 import { useParams } from 'react-router-dom';
 import { getCourseByIDWithSectionsAndPosts, getPostByID } from '../services/api_service';
@@ -12,7 +12,7 @@ import EditorContextProvider from "../context/editorCtx";
 function Course() {
     const { course_id, post_id } = useParams()
 
-    const courseQuery = useQuery([`getOneCourse`], () => getCourseByIDWithSectionsAndPosts(course_id), {cacheTime:0})
+    const courseQuery = useQuery([`getOneCourse`], () => getCourseByIDWithSectionsAndPosts(course_id))
     const postQuery = useQuery([`getOnePost-${post_id}`], () => getPostByID(post_id), {enabled: post_id? true: false, cacheTime:0})
 
 

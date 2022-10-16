@@ -39,10 +39,10 @@ type EditSectionDTO struct {
 
 type ChangeOrderSectionDTO struct {
 	SectionID uint `json:"section_id" binding:"required"`
-	Order     int  `json:"order" binding:"required"`
+	Order     *int `json:"order" binding:"required"` // since order can be  zero we need to have a pointer
 }
 
 type ChangeOrderPostDTO struct {
 	PostID uint `json:"post_id" binding:"required"`
-	Order  int  `json:"order" binding:"required"`
+	Order  *int `json:"order" binding:"required"` //order=0 will result in required validation failed, no desirable thus pointer
 }

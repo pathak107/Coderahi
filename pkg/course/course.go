@@ -207,19 +207,19 @@ func ChangeOrderOfSection(db *gorm.DB, orderDTO *dto.ChangeOrderSectionDTO) erro
 		return utils.NewUnexpectedServerError()
 	}
 
-	if section.Order > orderDTO.Order {
-		for i := orderDTO.Order; i <= section.Order-1; i++ {
+	if section.Order > utils.ToInt(orderDTO.Order) {
+		for i := utils.ToInt(orderDTO.Order); i <= section.Order-1; i++ {
 			sections[i].Order++
 		}
 	}
 
-	if section.Order < orderDTO.Order {
-		for i := orderDTO.Order; i > section.Order; i-- {
+	if section.Order < utils.ToInt(orderDTO.Order) {
+		for i := utils.ToInt(orderDTO.Order); i > section.Order; i-- {
 			sections[i].Order--
 		}
 	}
 
-	section.Order = orderDTO.Order
+	section.Order = utils.ToInt(orderDTO.Order)
 	result = db.Save(&sections)
 	if result.Error != nil {
 		logger.Println(result.Error)
