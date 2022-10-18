@@ -9,7 +9,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"),  require('@tailwindcss/typography'),],
   // daisyUI config (optional)
   daisyui: {
     styled: true,
@@ -19,6 +19,5 @@ module.exports = {
     logs: true,
     rtl: false,
     prefix: "",
-    darkTheme: "night",
   },
 }

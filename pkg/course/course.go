@@ -32,9 +32,17 @@ func CreateCourse(db *gorm.DB, courseDTO *dto.CreateCourseDTO) (uint, error) {
 }
 
 //find all courses
-func FindAllCourse(db *gorm.DB) ([]models.Course, error) {
+func FindAllCourse(db *gorm.DB, queryParams *QuerParamsCourse) ([]models.Course, error) {
 	var courses []models.Course
-	result := db.Find(&courses)
+	var result *gorm.DB
+	if queryParams.LoadPosts {
+		result = db.Preload("Sections.Posts").Preload("Sections").Find(&courses)
+	} else if queryParams.LoadSections {
+		result = db.Preload("Sections").Find(&courses)
+	} else {
+		result = db.Find(&courses)
+	}
+
 	if result.Error != nil {
 		logger.Println(result.Error)
 		return courses, utils.NewUnexpectedServerError()

@@ -7,11 +7,16 @@ const instance = axios.create({
 });
 
 export const getAllCourses = async () => {
-    const res = await instance.get(`course`)
+    const res = await instance.get(`course?section=true&post=true`)
     return res.data.data.courses
 }
 
 export const getCourseBySlugWithSectionsAndPosts = async (slug) => {
     const res = await instance.get(`course/slug/${slug}?section=true&post=true`)
     return res.data.data.course
+}
+
+export const getPostBySlug = async (slug) => {
+    const res = await instance.get(`post/slug/${slug}`)
+    return res.data.data.post
 }

@@ -9,7 +9,16 @@ import (
 )
 
 func (h *Handler) FindAllCourses(ctx *gin.Context) {
-	courses, err := course.FindAllCourse(h.db)
+	query := &course.QuerParamsCourse{}
+	if ctx.DefaultQuery("section", "false") == "true" {
+		query.LoadSections = true
+	}
+	if ctx.DefaultQuery("post", "false") == "true" {
+		query.LoadSections = true
+		query.LoadPosts = true
+	}
+
+	courses, err := course.FindAllCourse(h.db, query)
 	if err != nil {
 		ctx.Error(err)
 		return
