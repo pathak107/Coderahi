@@ -18,7 +18,8 @@ type Course struct {
 	ExpectedTime int
 	Likes        int
 	Views        int
-	CategoryID   uint
+	Categories   []Category `gorm:"many2many:course_categories;"`
+	Published    bool       `gorm:"default:false"`
 	//Comments
 }
 
@@ -29,12 +30,6 @@ type Section struct {
 	Description  string
 	ExpectedTime int //in minutes
 	Order        int
+	Published    bool   `gorm:"default:false"`
 	Posts        []Post `gorm:"constraint:OnDelete:CASCADE;"`
-}
-
-type Category struct {
-	Name        string
-	Slug        string
-	Description string
-	Courses     []Course
 }

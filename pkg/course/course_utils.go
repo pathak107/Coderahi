@@ -16,6 +16,7 @@ type QuerParamsCourse struct {
 	LoadSections   bool
 	LoadPosts      bool
 	LoadPostTitles bool
+	LoadDrafts     bool
 }
 
 func sortSectionsInCourse(course models.Course) models.Course {

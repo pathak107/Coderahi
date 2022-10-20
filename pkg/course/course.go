@@ -36,11 +36,11 @@ func FindAllCourse(db *gorm.DB, queryParams *QuerParamsCourse) ([]models.Course,
 	var courses []models.Course
 	var result *gorm.DB
 	if queryParams.LoadPosts {
-		result = db.Preload("Sections.Posts").Preload("Sections").Find(&courses)
+		result = db.Preload("Sections.Posts").Preload("Sections").Preload("Categories").Find(&courses)
 	} else if queryParams.LoadSections {
-		result = db.Preload("Sections").Find(&courses)
+		result = db.Preload("Sections").Preload("Categories").Find(&courses)
 	} else {
-		result = db.Find(&courses)
+		result = db.Preload("Categories").Find(&courses)
 	}
 
 	if result.Error != nil {
@@ -55,13 +55,13 @@ func FindCourseByID(db *gorm.DB, courseID string, queryParams *QuerParamsCourse)
 	var course models.Course
 	var result *gorm.DB
 	if queryParams.LoadPosts {
-		result = db.Preload("Sections.Posts").Preload("Sections").First(&course, courseID)
+		result = db.Preload("Sections.Posts").Preload("Sections").Preload("Categories").First(&course, courseID)
 		course = sortSectionsInCourse(course)
 	} else if queryParams.LoadSections {
-		result = db.Preload("Sections").First(&course, courseID)
+		result = db.Preload("Sections").Preload("Categories").First(&course, courseID)
 		course = sortSectionsInCourse(course)
 	} else {
-		result = db.First(&course, courseID)
+		result = db.Preload("Categories").First(&course, courseID)
 	}
 
 	// sorting the sections
@@ -76,13 +76,13 @@ func FindCourseBySlug(db *gorm.DB, slug string, queryParams *QuerParamsCourse) (
 	var course models.Course
 	var result *gorm.DB
 	if queryParams.LoadPosts {
-		result = db.Preload("Sections.Posts").Preload("Sections").Where(&models.Course{Slug: slug}).First(&course)
+		result = db.Preload("Sections.Posts").Preload("Sections").Preload("Categories").Where(&models.Course{Slug: slug}).First(&course)
 		course = sortSectionsInCourse(course)
 	} else if queryParams.LoadSections {
-		result = db.Preload("Sections").Where(&models.Course{Slug: slug}).First(&course)
+		result = db.Preload("Sections").Preload("Categories").Where(&models.Course{Slug: slug}).First(&course)
 		course = sortSectionsInCourse(course)
 	} else {
-		result = db.Where(&models.Course{Slug: slug}).First(&course)
+		result = db.Preload("Categories").Where(&models.Course{Slug: slug}).First(&course)
 	}
 
 	// sorting the sections

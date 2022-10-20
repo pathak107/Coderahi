@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateOrderOfPost } from '../../../services/api_service';
 
 const SectionCard = ({ section, course_id, provided, innerRef }) => {
+    const [dropDownOpen, setDropDownOpen] = useState(false)
     const postModalCtx = useContext(PostContext)
     const confirmModalCtx = useContext(ConfirmModalCtx)
     const sectionModalCtx = useContext(SectionContext)
@@ -37,71 +38,74 @@ const SectionCard = ({ section, course_id, provided, innerRef }) => {
 
     const changeOrderOfPosts = (e) => {
         if (!e.destination) return
-        const changePostID =  posts[e.source.index].ID
+        const changePostID = posts[e.source.index].ID
         const items = Array.from(posts);
         const [reorderedItem] = items.splice(e.source.index, 1);
         items.splice(e.destination.index, 0, reorderedItem);
         setPosts(items)
 
         // make a request 
-        mutation.mutate({post_id: changePostID, order: e.destination.index}, 'change-post-order')
+        mutation.mutate({ post_id: changePostID, order: e.destination.index }, 'change-post-order')
     }
 
     return (
-        <div className="section" {...provided.draggableProps} {...provided.dragHandleProps} ref={innerRef}>
-            <div className="section-title text-base font-medium flex flex-row">
-                <p>{section.Order+1} {section.Title}</p>
-                <a className="btn btn-sm self-end"
-                    onClick={() => {
-                        postModalCtx.actions.setEdit(false)
-                        postModalCtx.actions.setSectionID(section.ID)
-                        postModalCtx.actions.openModal()
-                    }}
-                >
-                    <FaPlus />
-                </a>
-                <a className="btn btn-sm self-end"
-                    onClick={() => {
-                        confirmModalCtx.actions.openModal()
-                        confirmModalCtx.actions.setOnYesAction({
-                            action: () => sectionModalCtx.actions.deleteSectionAct(section.ID)
-                        })
+        <div className="section rounded bg-base-300 items-center p-0" {...provided.draggableProps} {...provided.dragHandleProps} ref={innerRef}>
+            <div className={`collapse ${dropDownOpen ? "collapse-open" : "collapse-close"}`} tabIndex={0}>
+                <div className='section-title collapse-title flex flex-row justify-between'>
+                    <a className='hover:underline' onClick={() => setDropDownOpen(!dropDownOpen)}>
+                        <p className='text-xs font-bold'>{section.Order + 1} {section.Title}</p>
+                    </a>
+                    <div className='flex flex-row gap-1'>
+                        <a className='btn btn-xs' onClick={() => {
+                                postModalCtx.actions.setEdit(false)
+                                postModalCtx.actions.setSectionID(section.ID)
+                                postModalCtx.actions.openModal()
+                            }}>
+                            <FaPlus  />
+                        </a>
 
-                    }}
-                >
-                    <FaTrashAlt />
-                </a>
-                <a className="btn btn-sm self-end"
-                    onClick={() => {
-                        sectionModalCtx.actions.setEdit(true)
-                        sectionModalCtx.actions.setSectionID(section.ID)
-                        sectionModalCtx.actions.setTitle(section.Title)
-                        sectionModalCtx.actions.setDesc(section.Description)
-                        sectionModalCtx.actions.openModal()
-                    }}
-                >
-                    <FaEdit />
-                </a>
-            </div>
-            <div className="section-content">
-                <DragDropContext onDragEnd={changeOrderOfPosts}>
-                    <Droppable droppableId='post-cards'>
-                        {(provided) => (
-                            <ul className="menu bg-base-200 text-xs" {...provided.droppableProps} ref={provided.innerRef}>
-                                {posts.map((post, index) => {
-                                    return <Draggable key={post.ID} draggableId={post.ID.toString()} index={index}>
-                                        {(provided) => (
-                                            <PostCard course_id={course_id} post={post} innerRef={provided.innerRef} provided={provided} />
-                                        )}
-                                    </Draggable>
+                        <a className='btn btn-xs' onClick={() => {
+                                confirmModalCtx.actions.openModal()
+                                confirmModalCtx.actions.setOnYesAction({
+                                    action: () => sectionModalCtx.actions.deleteSectionAct(section.ID)
+                                })
 
-                                })}
-                                {provided.placeholder}
-                            </ul>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                            }}>
+                            <FaTrashAlt />
+                        </a>
 
+                        <a className='btn btn-xs' onClick={() => {
+                                sectionModalCtx.actions.setEdit(true)
+                                sectionModalCtx.actions.setSectionID(section.ID)
+                                sectionModalCtx.actions.setTitle(section.Title)
+                                sectionModalCtx.actions.setDesc(section.Description)
+                                sectionModalCtx.actions.openModal()
+                            }}>
+                            <FaEdit/>
+                        </a>
+
+                    </div>
+
+                </div>
+                <div className="section-content collapse-content">
+                    <DragDropContext onDragEnd={changeOrderOfPosts}>
+                        <Droppable droppableId='post-cards'>
+                            {(provided) => (
+                                <ul className="menu bg-base-200 text-xs" {...provided.droppableProps} ref={provided.innerRef}>
+                                    {posts.map((post, index) => {
+                                        return <Draggable key={post.ID} draggableId={post.ID.toString()} index={index}>
+                                            {(provided) => (
+                                                <PostCard course_id={course_id} post={post} innerRef={provided.innerRef} provided={provided} />
+                                            )}
+                                        </Draggable>
+
+                                    })}
+                                    {provided.placeholder}
+                                </ul>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+                </div>
             </div>
         </div>
     );

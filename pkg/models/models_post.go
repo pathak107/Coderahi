@@ -14,5 +14,6 @@ type Post struct {
 	HTMLBody    *string
 	MarkDown    *string
 	BodyJson    *string
+	Published   bool `gorm:"default:false"`
 	//Comments
 }

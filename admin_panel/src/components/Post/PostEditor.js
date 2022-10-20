@@ -28,16 +28,18 @@ const PostEditor = ({postID, initialData}) => {
 
     return (
         <>
-            <button className="btn"
-                onClick={()=>{
-                    mutation.mutate({
-                        body: editorCtx.state.content,
-                        post_id: postID
-                    }, "edit-post-body")
-                }}
-            >
-                Save
-            </button>
+            <div className="my-2 p-2 bg-gray-900">
+                <button className="btn btn-sm"
+                    onClick={()=>{
+                        mutation.mutate({
+                            body: editorCtx.state.content,
+                            post_id: postID
+                        }, "edit-post-body")
+                    }}
+                >
+                    Save
+                </button>
+            </div>
             <Editor initialData={JSON.parse(initialData)}/>
         </>
     );

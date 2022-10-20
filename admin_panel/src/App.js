@@ -18,6 +18,7 @@ import Course from './pages/Course';
 import CourseList from './pages/CourseList';
 import ModalContextProvider from './context/modalContext';
 import ConfirmModalCtxProvider, { ConfirmModalCtx } from './context/confirmModalCtx';
+import Header from './components/Layout/Header';
 
 const queryClient = new QueryClient()
 
@@ -48,6 +49,7 @@ function App() {
         <ReactQueryDevtools initialIsOpen={true} />
         <ModalContextProvider>
           <ConfirmModalCtxProvider>
+            <Header/>
             <RouterProvider router={router} />
           </ConfirmModalCtxProvider>
         </ModalContextProvider>

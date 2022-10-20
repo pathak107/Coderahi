@@ -11,35 +11,39 @@ const PostCard = ({course_id, post, provided, innerRef}) => {
 
     return (
         <li {...provided.draggableProps} {...provided.dragHandleProps} ref={innerRef}>
-            <div className='flex flex-row'>
-                <p>{post.Order+1}.</p>
-                <a className='hover:underline' onClick={() => {
-                    navigate(`/course/${course_id}/post/${post.ID}`)
-                }}>
-                    {post.Title}
-                </a>
-                <a className='btn btn-xs'
-                    onClick={() => {
-                        confirmModalCtx.actions.openModal()
-                        confirmModalCtx.actions.setOnYesAction({
-                            action: () => postModalCtx.actions.deletePostAct(post.ID)
-                        })
+            <div className='flex flex-row justify-between'>
+                <div className='flex gap-2'>
+                    <p className='text-xs'>{post.Order+1}.</p>
+                    <a className='hover:underline font-bold' onClick={() => {
+                        navigate(`/course/${course_id}/post/${post.ID}`)
+                    }}>
+                        {post.Title}
+                    </a>
+                </div>
+                <div>
+                    <a className='btn btn-xs'
+                        onClick={() => {
+                            confirmModalCtx.actions.openModal()
+                            confirmModalCtx.actions.setOnYesAction({
+                                action: () => postModalCtx.actions.deletePostAct(post.ID)
+                            })
 
-                    }}
-                >
-                    <FaTrashAlt />
-                </a>
-                <a className='btn btn-xs'
-                    onClick={() => {
-                        postModalCtx.actions.setEdit(true)
-                        postModalCtx.actions.setPostID(post.ID)
-                        postModalCtx.actions.setTitle(post.Title)
-                        postModalCtx.actions.setDesc(post.Description)
-                        postModalCtx.actions.openModal()
-                    }}
-                >
-                    <FaEdit />
-                </a>
+                        }}
+                    >
+                        <FaTrashAlt />
+                    </a>
+                    <a className='btn btn-xs'
+                        onClick={() => {
+                            postModalCtx.actions.setEdit(true)
+                            postModalCtx.actions.setPostID(post.ID)
+                            postModalCtx.actions.setTitle(post.Title)
+                            postModalCtx.actions.setDesc(post.Description)
+                            postModalCtx.actions.openModal()
+                        }}
+                    >
+                        <FaEdit />
+                    </a>
+                </div>
             </div>
         </li>
     );

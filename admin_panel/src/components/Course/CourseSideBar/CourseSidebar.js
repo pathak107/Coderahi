@@ -48,31 +48,27 @@ function CourseSidebar({ course }) {
             <ConfirmationModal />
             <PostModal />
 
-            <div className="h-screen overflow-auto overscroll-contain bg-base-900 w-1/5">
+            <div className="h-screen overflow-auto overscroll-contain bg-base-900 w-3/12">
                 <div className="content px-3">
 
                     {/* For Heading */}
-                    <div className="course py-3">
-                        <a className="text-2xl hover:underline cursor-pointer"
+                    <div className="course py-3 flex flex-row justify-between items-center mr-2">
+                        <a className="text-2xl font-bold hover:underline cursor-pointer text-center"
                             onClick={() => {
                                 navigate(`/course/${course_id}`)
                             }}
                         >
                             {course.Title}
                         </a>
-                    </div>
-
-                    <ul className="menu menu-horizontal bg-base-100 rounded-box place-items-center">
-                        <li>
-                            <a onClick={() => {
+                        <a className='hover:bg-base-300' onClick={() => {
                                 sectionModalCtx.actions.setEdit(false)
                                 sectionModalCtx.actions.setCourseID(course_id)
                                 sectionModalCtx.actions.openModal()
                             }}>
                                 <FaPlus />
-                            </a>
-                        </li>
-                    </ul>
+                        </a>
+                    </div>
+                            
 
                     <DragDropContext onDragEnd={changeOrderOfSections}>
                         <Droppable droppableId='section-droppable'>
