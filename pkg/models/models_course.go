@@ -7,9 +7,8 @@ import (
 type Course struct {
 	gorm.Model
 	Title        string
-	DescHTML     *string
-	DescJson     *string
-	DescMarkdown *string
+	HTML         *string
+	MarkDown     *string
 	ImageURL     *string
 	DescShort    string
 	Slug         string

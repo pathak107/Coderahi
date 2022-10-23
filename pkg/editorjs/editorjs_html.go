@@ -53,7 +53,7 @@ func HTML(input string, options ...Options) string {
 
 	}
 
-	return strings.Join(result[:], "\n\n")
+	return strings.Join(result[:], "")
 }
 
 func generateHTMLHeader(el EditorJSData) string {

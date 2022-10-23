@@ -14,7 +14,7 @@ const CourseDescription = ({ course }) => {
                     : <h2 className="text-4xl font-bold">₹ {course.Cost}</h2>
                     }
                 </div>
-                <article className="prose lg:prose-xl leading-normal" dangerouslySetInnerHTML={{ __html: course.DescHTML }} />
+                <article className="prose lg:prose-l leading-normal" dangerouslySetInnerHTML={{ __html: course.HTML }} />
             </div>
         </div>
     );

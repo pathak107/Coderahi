@@ -23,13 +23,14 @@ export const createCourse = async ({ title, desc, cost }) => {
     })
     return res
 }
-export const editCourse = async ({ title, desc, cost, body, course_id }) => {
+export const editCourse = async ({ title, desc, cost, markdown, html, course_id }) => {
     console.log(cost)
     const res = await instance.patch(`course/${course_id}`, {
         title,
         desc_short: desc,
         cost: parseInt(cost),
-        desc_body:  JSON.stringify(body)
+        markdown,
+        html,
     })
     return res
 }
@@ -60,9 +61,11 @@ export const editPost = async ({ post_id, title, desc }) => {
     return res
 }
 
-export const editPostBody = async ({ body, post_id }) => {
+export const editPostBody = async ({ markdown, html, post_id }) => {
+    console.log(markdown)
     const res = await instance.patch(`post/${post_id}`, {
-        body: JSON.stringify(body)
+        markdown,
+        html
     })
     return res
 }

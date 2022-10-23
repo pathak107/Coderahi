@@ -25,19 +25,19 @@ const queryClient = new QueryClient()
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <><Header/><Home /></>,
   },
   {
     path: "/course/:course_id",
-    element: <Course />,
+    element: <><Header/><Course /></>,
   },
   {
     path: "/course/",
-    element: <CourseList />,
+    element: <><Header/><CourseList /></>,
   },
   {
     path: "/course/:course_id/post/:post_id",
-    element: <Course />,
+    element: <><Header/><Course /></>,
   },
 ]);
 
@@ -49,7 +49,6 @@ function App() {
         <ReactQueryDevtools initialIsOpen={true} />
         <ModalContextProvider>
           <ConfirmModalCtxProvider>
-            <Header/>
             <RouterProvider router={router} />
           </ConfirmModalCtxProvider>
         </ModalContextProvider>

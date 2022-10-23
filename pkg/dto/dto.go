@@ -9,7 +9,8 @@ type CreatePostDTO struct {
 type EditPostDTO struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Body        string `json:"body"`
+	Markdown    string `json:"markdown"`
+	HTML        string `json:"html"`
 }
 
 type CreateCourseDTO struct {
@@ -20,7 +21,8 @@ type CreateCourseDTO struct {
 
 type EditCourseDTO struct {
 	Title     string `json:"title"`
-	DescBody  string `json:"desc_body"`
+	Markdown  string `json:"markdown"`
+	HTML      string `json:"html"`
 	DescShort string `json:"desc_short"`
 	Cost      int    `json:"cost"`
 }

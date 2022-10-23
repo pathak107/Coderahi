@@ -13,7 +13,7 @@ import { updateOrderOfSection } from '../../../services/api_service';
 
 
 function CourseSidebar({ course }) {
-    const { course_id } = useParams()
+    const { course_id, post_id } = useParams()
     const navigate = useNavigate()
     const sectionModalCtx = useContext(SectionContext)
     const [sections, setSections] = useState(course.Sections)
@@ -39,6 +39,21 @@ function CourseSidebar({ course }) {
 
         // make a request 
         mutation.mutate({section_id: changeSectionID, order: e.destination.index}, 'change-section-order')
+    }
+
+    const getSectionIDOfOpenedPost = ()=>{
+        if (!post_id) return;
+
+        course.Sections.forEach(section => {
+            section.Posts.forEach(post=>{
+                if (post.ID === post_id){
+                    console.log(post_id)
+                    console.log(post.ID)
+                    console.log(section.ID)
+                    return section.ID
+                }
+            })
+        });
     }
 
 
@@ -77,7 +92,13 @@ function CourseSidebar({ course }) {
                                     {sections.map((section, index) => {
                                         return  <Draggable key={section.ID} draggableId={section.ID.toString()} index={index}>
                                             {(provided)=>(
-                                                <SectionCard course_id={course_id} section={section} innerRef={provided.innerRef} provided={provided} />
+                                                <SectionCard 
+                                                    course_id={course_id} 
+                                                    section={section} 
+                                                    innerRef={provided.innerRef} 
+                                                    provided={provided} 
+                                                    isDropDownOpen={section.ID===getSectionIDOfOpenedPost()}
+                                                />
                                             )}   
                                         </Draggable>
                                     })}

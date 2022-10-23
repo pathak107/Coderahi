@@ -11,9 +11,8 @@ type Post struct {
 	Description string
 	Slug        string
 	Order       int
-	HTMLBody    *string
+	HTML        *string
 	MarkDown    *string
-	BodyJson    *string
 	Published   bool `gorm:"default:false"`
 	//Comments
 }

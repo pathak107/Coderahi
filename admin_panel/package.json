@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@bomdi/codebox": "^2.0.0",
+    "@calumk/editorjs-codeflask": "^1.0.9",
     "@editorjs/editorjs": "^2.25.0",
     "@editorjs/header": "^2.6.2",
     "@flaticon/flaticon-uicons": "^1.7.0",
@@ -11,14 +13,18 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@uiw/react-md-editor": "^3.19.1",
     "axios": "^1.1.2",
     "daisyui": "^2.31.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
+    "react-select": "^5.5.4",
+    "showdown": "^2.1.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -46,6 +52,8 @@
     ]
   },
   "devDependencies": {
+    "@editorjs/image": "^2.6.2",
+    "@editorjs/quote": "^2.4.0",
     "@tailwindcss/typography": "^0.5.7",
     "tailwindcss": "^3.1.8"
   }

@@ -5,7 +5,6 @@ import (
 
 	"github.com/gosimple/slug"
 	"github.com/pathak107/coderahi-learn/pkg/dto"
-	"github.com/pathak107/coderahi-learn/pkg/editorjs"
 	"github.com/pathak107/coderahi-learn/pkg/models"
 	"github.com/pathak107/coderahi-learn/pkg/utils"
 	"gorm.io/gorm"
@@ -105,10 +104,9 @@ func EditCourseByID(db *gorm.DB, courseDTO *dto.EditCourseDTO, courseID string) 
 	course.Slug = slug.Make(courseDTO.Title)
 	course.Cost = courseDTO.Cost
 
-	if courseDTO.DescBody != "" {
-		course.DescMarkdown = utils.ToStringPtr(editorjs.Markdown(courseDTO.DescBody))
-		course.DescHTML = utils.ToStringPtr(editorjs.HTML(courseDTO.DescBody))
-		course.DescJson = utils.ToStringPtr(courseDTO.DescBody)
+	if courseDTO.HTML != "" && courseDTO.Markdown != "" {
+		course.MarkDown = utils.ToStringPtr(courseDTO.Markdown)
+		course.HTML = utils.ToStringPtr(courseDTO.HTML)
 	}
 	course.DescShort = courseDTO.DescShort
 

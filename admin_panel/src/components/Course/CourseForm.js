@@ -1,11 +1,12 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Editor from "../Editor/Editor";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { editCourse } from "../../services/api_service";
 import { EditorContext } from "../../context/editorCtx";
 import ImageUpload from "../ImageUpload/ImageUpload";
+import EditorMD from "../Editor/EditorMD";
 
-const CourseForm = ({course, initialData}) => {
+const CourseForm = ({course}) => {
     const [title, setTitle]=useState(course.Title)
     const [desc, setDesc]=useState(course.DescShort)
     const [cost, setCost]=useState(course.Cost)
@@ -23,6 +24,12 @@ const CourseForm = ({course, initialData}) => {
             queryClient.invalidateQueries(["getOneCourse"])
         },
     })
+
+    useEffect(() => {
+        return () => {
+            queryClient.invalidateQueries([`getOneCourse`])
+        }
+    }, [])
 
     return (
         <div className="">
@@ -46,22 +53,23 @@ const CourseForm = ({course, initialData}) => {
                 >
                 </textarea>
             </form>
-            <div className="w-screen">
-                <Editor initialData={JSON.parse(initialData)}/>
-            </div>
             <button className="btn"
                 onClick={()=>{
                     mutation.mutate({
                         title,
                         desc,
                         course_id: course.ID,
-                        body: editorCtx.state.content,
+                        markdown: editorCtx.state.markD,
+                        html: editorCtx.state.html,
                         cost
                     }, "edit-course")
                 }}
             >
                 Save
             </button>
+            <div className="w-full">
+                <EditorMD />
+            </div>
         </div>
     );
 }

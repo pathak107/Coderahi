@@ -3,7 +3,6 @@ package post
 import (
 	"github.com/gosimple/slug"
 	"github.com/pathak107/coderahi-learn/pkg/dto"
-	"github.com/pathak107/coderahi-learn/pkg/editorjs"
 	"github.com/pathak107/coderahi-learn/pkg/models"
 	"github.com/pathak107/coderahi-learn/pkg/utils"
 	"gorm.io/gorm"
@@ -52,10 +51,9 @@ func EditPost(db *gorm.DB, postDTO *dto.EditPostDTO, postID string) error {
 		post.Description = postDTO.Description
 	}
 
-	if postDTO.Body != "" {
-		post.MarkDown = utils.ToStringPtr(editorjs.Markdown(postDTO.Body))
-		post.HTMLBody = utils.ToStringPtr(editorjs.HTML(postDTO.Body))
-		post.BodyJson = utils.ToStringPtr(postDTO.Body)
+	if postDTO.HTML != "" && postDTO.Markdown != "" {
+		post.MarkDown = utils.ToStringPtr(postDTO.Markdown)
+		post.HTML = utils.ToStringPtr(postDTO.HTML)
 	}
 
 	result := db.Save(&post)

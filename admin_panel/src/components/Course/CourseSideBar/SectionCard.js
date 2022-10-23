@@ -8,8 +8,8 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateOrderOfPost } from '../../../services/api_service';
 
-const SectionCard = ({ section, course_id, provided, innerRef }) => {
-    const [dropDownOpen, setDropDownOpen] = useState(false)
+const SectionCard = ({ section, course_id, provided, innerRef, isDropDownOpen }) => {
+    const [dropDownOpen, setDropDownOpen] = useState(isDropDownOpen)
     const postModalCtx = useContext(PostContext)
     const confirmModalCtx = useContext(ConfirmModalCtx)
     const sectionModalCtx = useContext(SectionContext)

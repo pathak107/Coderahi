@@ -35,12 +35,14 @@ function Course() {
             <MainContent>
                 {/* is just course_id is there in params , show the edit course form otherwise if section and post_id is also present, show that */}
                 {post_id? 
-                    <EditorContextProvider >
-                        <PostEditor postID={post_id} initialData={postQuery.data.data.data.post.BodyJson}/>
+                    <EditorContextProvider 
+                        initialEditorData={postQuery.data.data.data.post.MarkDown}
+                    >
+                        <PostEditor postID={post_id} />
                     </EditorContextProvider>
                     :
-                    <EditorContextProvider >
-                        <CourseForm course={courseQuery.data.data.data.course} initialData={courseQuery.data.data.data.course.DescJson}/>
+                    <EditorContextProvider initialEditorData={courseQuery.data.data.data.course.MarkDown}>
+                        <CourseForm course={courseQuery.data.data.data.course} />
                     </EditorContextProvider> 
                 }
                 
