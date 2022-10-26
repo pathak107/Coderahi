@@ -34,6 +34,8 @@ const PostForm = () => {
                     }}
                 >
                 </textarea>
+                <span className="label-text">Publish</span> 
+                <input type="checkbox" className="toggle" checked={state.published} onClick={()=>{actions.setPublished(!state.published)}}/>
             </form>
             <a className="btn"
                 onClick={() => {
@@ -42,6 +44,7 @@ const PostForm = () => {
                             post_id: state.postID,
                             title: state.title,
                             desc: state.desc,
+                            publish: state.published
                         }, "edit-post")
                     } else {
                         mutation.mutate({

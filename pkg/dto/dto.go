@@ -11,6 +11,7 @@ type EditPostDTO struct {
 	Description string `json:"description"`
 	Markdown    string `json:"markdown"`
 	HTML        string `json:"html"`
+	Publish     bool   `json:"publish"`
 }
 
 type CreateCourseDTO struct {
@@ -20,11 +21,23 @@ type CreateCourseDTO struct {
 }
 
 type EditCourseDTO struct {
-	Title     string `json:"title"`
-	Markdown  string `json:"markdown"`
-	HTML      string `json:"html"`
-	DescShort string `json:"desc_short"`
-	Cost      int    `json:"cost"`
+	Title      string     `json:"title"`
+	Markdown   string     `json:"markdown"`
+	HTML       string     `json:"html"`
+	DescShort  string     `json:"desc_short"`
+	Cost       int        `json:"cost"`
+	Publish    bool       `json:"publish"`
+	Categories []Category `json:"categories"`
+}
+
+type Category struct {
+	Label string `json:"label"`
+	Value string `json:"value"`
+	IsNew bool   `json:"__isNew__"`
+}
+
+type CategoryDTO struct {
+	Name string `json:"name"`
 }
 
 type CreateSectionDTO struct {
@@ -37,6 +50,7 @@ type EditSectionDTO struct {
 	Title        string `json:"title"`
 	Description  string `json:"desc"`
 	ExpectedTime int    `json:"expected_time"`
+	Publish      bool   `json:"publish"`
 }
 
 type ChangeOrderSectionDTO struct {

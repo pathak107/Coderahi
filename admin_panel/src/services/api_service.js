@@ -7,12 +7,12 @@ const instance = axios.create({
 });
 
 export const getAllCourses = async () => {
-    const res = await instance.get(`course`)
+    const res = await instance.get(`course?draft=true`)
     return res
 }
 
 export const getCourseByIDWithSectionsAndPosts = async (course_id) => {
-    const res = await instance.get(`course/${course_id}?section=true&post=true`)
+    const res = await instance.get(`course/${course_id}?section=true&post=true&draft=true`)
     return res
 }
 export const createCourse = async ({ title, desc, cost }) => {
@@ -23,7 +23,7 @@ export const createCourse = async ({ title, desc, cost }) => {
     })
     return res
 }
-export const editCourse = async ({ title, desc, cost, markdown, html, course_id }) => {
+export const editCourse = async ({ title, desc, cost, markdown, html, course_id, categories, publish }) => {
     console.log(cost)
     const res = await instance.patch(`course/${course_id}`, {
         title,
@@ -31,6 +31,8 @@ export const editCourse = async ({ title, desc, cost, markdown, html, course_id 
         cost: parseInt(cost),
         markdown,
         html,
+        categories,
+        publish
     })
     return res
 }
@@ -53,10 +55,11 @@ export const createPost = async ({ section_id, title, desc }) => {
     return res
 }
 
-export const editPost = async ({ post_id, title, desc }) => {
+export const editPost = async ({ post_id, title, desc, publish }) => {
     const res = await instance.patch(`post/${post_id}`, {
         title: title,
         description: desc,
+        publish
     })
     return res
 }
@@ -83,10 +86,11 @@ export const createSection = async ({ course_id, title, desc }) => {
     })
     return res
 }
-export const editSection = async ({ section_id, title, desc }) => {
+export const editSection = async ({ section_id, title, desc, publish }) => {
     const res = await instance.patch(`course/section/${section_id}`, {
         title: title,
         desc,
+        publish
     })
     return res
 }
@@ -121,5 +125,10 @@ export const updateOrderOfSection = async ({section_id, order}) =>{
         section_id,
         order
     })
+    return res
+}
+
+export const getAllCategories = async ()=>{
+    const res = await instance.get(`category`)
     return res
 }

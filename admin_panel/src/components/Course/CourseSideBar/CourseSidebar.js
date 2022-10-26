@@ -41,21 +41,24 @@ function CourseSidebar({ course }) {
         mutation.mutate({section_id: changeSectionID, order: e.destination.index}, 'change-section-order')
     }
 
+
     const getSectionIDOfOpenedPost = ()=>{
         if (!post_id) return;
+        let sectionID
 
         course.Sections.forEach(section => {
             section.Posts.forEach(post=>{
-                if (post.ID === post_id){
+                if (post.ID == post_id){
                     console.log(post_id)
                     console.log(post.ID)
                     console.log(section.ID)
-                    return section.ID
+                    sectionID= section.ID
                 }
             })
         });
+        return sectionID
     }
-
+    const currSectionID= getSectionIDOfOpenedPost()
 
     return (
         <>
@@ -97,7 +100,7 @@ function CourseSidebar({ course }) {
                                                     section={section} 
                                                     innerRef={provided.innerRef} 
                                                     provided={provided} 
-                                                    isDropDownOpen={section.ID===getSectionIDOfOpenedPost()}
+                                                    isDropDownOpen={section.ID==currSectionID}
                                                 />
                                             )}   
                                         </Draggable>

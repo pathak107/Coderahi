@@ -11,6 +11,7 @@ const PostContextProvider = ({children}) => {
     const [sectionID, setSectionID]=useState(null)
     const [title, setTitle]=useState("")
     const [desc, setDesc]=useState("")
+    const [published, setPublished]=useState(false)
 
     const queryClient = useQueryClient()
     const mutation = useMutation(deletePost, {
@@ -38,8 +39,8 @@ const PostContextProvider = ({children}) => {
     }
 
     const providerVal={
-        state:{isOpen, edit, postID, sectionID, title, desc},
-        actions:{toggleModal, openModal, closeModal, setEdit, setPostID, setSectionID, setTitle, setDesc, deletePostAct},
+        state:{isOpen, edit, postID, sectionID, title, desc, published},
+        actions:{toggleModal, openModal, closeModal, setEdit, setPostID, setSectionID, setTitle, setDesc, deletePostAct, setPublished},
     }
     return ( 
         <PostContext.Provider value={providerVal}>

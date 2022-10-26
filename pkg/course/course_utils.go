@@ -13,10 +13,9 @@ var (
 )
 
 type QuerParamsCourse struct {
-	LoadSections   bool
-	LoadPosts      bool
-	LoadPostTitles bool
-	LoadDrafts     bool
+	LoadSections bool
+	LoadPosts    bool
+	LoadDrafts   bool
 }
 
 func sortSectionsInCourse(course models.Course) models.Course {
@@ -24,4 +23,28 @@ func sortSectionsInCourse(course models.Course) models.Course {
 		return course.Sections[i].Order < course.Sections[j].Order
 	})
 	return course
+}
+
+func CacheKeyMaker(query *QuerParamsCourse, slug bool, ID bool) string {
+	baseKey := "course"
+	if query.LoadSections {
+		baseKey += "-sections"
+	}
+	if query.LoadPosts {
+		baseKey += "-posts"
+	}
+	if query.LoadDrafts {
+		baseKey += "-drafts"
+	}
+	if slug {
+		baseKey += "-slug"
+	}
+	if ID {
+		baseKey += "-ID"
+	}
+	if !slug && !ID {
+		baseKey += "-all"
+	}
+
+	return baseKey
 }

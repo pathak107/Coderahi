@@ -9,33 +9,21 @@ import (
 	"github.com/pathak107/coderahi-learn/pkg/models"
 )
 
-var (
-	courses_cache                = "courses"
-	courses_sections_cache       = "courses-sections"
-	courses_sections_posts_cache = "courses-sections-posts"
-
-	course_cache_ID                = "course-ID-"
-	course_sections_cache_ID       = "course-sections-ID-"
-	course_sections_posts_cache_ID = "course-sections-posts-ID-"
-
-	course_cache_Slug                = "course-Slug-"
-	course_sections_cache_Slug       = "course-sections-Slug-"
-	course_sections_posts_cache_Slug = "course-sections-posts-Slug-"
-)
-
 func (h *Handler) FindAllCourses(ctx *gin.Context) {
 	query := &course.QuerParamsCourse{}
-	cacheKey := courses_cache
 	if ctx.DefaultQuery("section", "false") == "true" {
 		query.LoadSections = true
-		cacheKey = courses_sections_cache
 	}
 	if ctx.DefaultQuery("post", "false") == "true" {
 		query.LoadSections = true
 		query.LoadPosts = true
-		cacheKey = courses_sections_posts_cache
 	}
 
+	if ctx.DefaultQuery("draft", "false") == "true" {
+		query.LoadDrafts = true
+	}
+
+	cacheKey := course.CacheKeyMaker(query, false, false)
 	cacheResp := h.cache.Get(cacheKey)
 	if cacheResp.Found {
 		logger.Printf("Cache hit for %v\n", cacheKey)
@@ -65,17 +53,19 @@ func (h *Handler) FindAllCourses(ctx *gin.Context) {
 func (h *Handler) FindCourseByID(ctx *gin.Context) {
 	courseID := ctx.Param("course_id")
 	query := &course.QuerParamsCourse{}
-	cacheKey := course_cache_ID + courseID
 
 	if ctx.DefaultQuery("section", "false") == "true" {
 		query.LoadSections = true
-		cacheKey = course_sections_cache_ID + courseID
 		if ctx.DefaultQuery("post", "false") == "true" {
 			query.LoadPosts = true
-			cacheKey = course_sections_posts_cache_ID + courseID
 		}
 	}
 
+	if ctx.DefaultQuery("draft", "false") == "true" {
+		query.LoadDrafts = true
+	}
+
+	cacheKey := course.CacheKeyMaker(query, false, true) + courseID
 	cacheResp := h.cache.Get(cacheKey)
 	if cacheResp.Found {
 		logger.Printf("Cache hit for %v\n", cacheKey)
@@ -106,15 +96,18 @@ func (h *Handler) FindCourseByID(ctx *gin.Context) {
 func (h *Handler) FindCourseBySlug(ctx *gin.Context) {
 	slug := ctx.Param("slug")
 	query := &course.QuerParamsCourse{}
-	cacheKey := course_cache_Slug + slug
 	if ctx.DefaultQuery("section", "false") == "true" {
 		query.LoadSections = true
-		cacheKey = course_sections_cache_Slug + slug
 		if ctx.DefaultQuery("post", "false") == "true" {
 			query.LoadPosts = true
-			cacheKey = course_sections_posts_cache_Slug + slug
 		}
 	}
+
+	if ctx.DefaultQuery("draft", "false") == "true" {
+		query.LoadDrafts = true
+	}
+
+	cacheKey := course.CacheKeyMaker(query, true, false) + slug
 
 	cacheResp := h.cache.Get(cacheKey)
 	if cacheResp.Found {
@@ -155,7 +148,7 @@ func (h *Handler) CreateCourse(ctx *gin.Context) {
 		return
 	}
 
-	defer h.cache.RemoveMultiple([]string{courses_cache, courses_sections_cache, courses_sections_posts_cache})
+	defer h.cache.Purge()
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": gin.H{
 			"course_id": courseID,

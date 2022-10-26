@@ -5,11 +5,14 @@ import { editCourse } from "../../services/api_service";
 import { EditorContext } from "../../context/editorCtx";
 import ImageUpload from "../ImageUpload/ImageUpload";
 import EditorMD from "../Editor/EditorMD";
+import Creatable, { useCreatable } from 'react-select/creatable';
 
-const CourseForm = ({course}) => {
+const CourseForm = ({course, cats}) => {
     const [title, setTitle]=useState(course.Title)
     const [desc, setDesc]=useState(course.DescShort)
     const [cost, setCost]=useState(course.Cost)
+    const [published, setPublished]=useState(course.Published)
+    
 
     const editorCtx = useContext(EditorContext)
 
@@ -25,6 +28,29 @@ const CourseForm = ({course}) => {
         },
     })
 
+    const addCategory = (vals)=>{
+        console.log(vals)
+        setCategories(vals)
+    }
+
+    const getAllOptions = ()=>{
+        const options=[]
+        cats.forEach(cat => {
+            options.push({ value: cat.ID.toString(), label: cat.Name })
+        });
+        return options
+    }
+
+    const getCourseSelectedOptions = () => {
+        const selectedOptions=[]
+        course.Categories.forEach(cat=>{
+            selectedOptions.push({ value: cat.ID.toString(), label: cat.Name })
+        })
+        return selectedOptions
+    }
+
+    const [categories, setCategories]= useState(getCourseSelectedOptions())
+
     useEffect(() => {
         return () => {
             queryClient.invalidateQueries([`getOneCourse`])
@@ -35,6 +61,8 @@ const CourseForm = ({course}) => {
         <div className="">
             <h1 className="text-4xl">Course Details</h1>
             <ImageUpload imageURL={course.ImageURL} course_id={course.ID}/>
+            <span className="label-text">Publish</span> 
+            <input type="checkbox" className="toggle" checked={published} onClick={()=>{setPublished(!published)}}/>
             <form className="flex flex-col justify-center">
                 <input type="text" placeholder="Title" className="input input-bordered w-full max-w-xs" value={title}
                     onChange={(e)=>{
@@ -52,6 +80,17 @@ const CourseForm = ({course}) => {
                     }}
                 >
                 </textarea>
+                <Creatable
+                    options={getAllOptions()} 
+                    isMulti={true}
+                    backspaceRemovesValue={true}
+                    isSearchable={true}
+                    isClearable={true}
+                    onChange={addCategory}
+                    tabSelectsValue={true}
+                    value={categories}
+                    theme='neutral170'
+                />
             </form>
             <button className="btn"
                 onClick={()=>{
@@ -61,7 +100,9 @@ const CourseForm = ({course}) => {
                         course_id: course.ID,
                         markdown: editorCtx.state.markD,
                         html: editorCtx.state.html,
-                        cost
+                        cost,
+                        categories,
+                        publish: published
                     }, "edit-course")
                 }}
             >

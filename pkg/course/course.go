@@ -34,12 +34,27 @@ func CreateCourse(db *gorm.DB, courseDTO *dto.CreateCourseDTO) (uint, error) {
 func FindAllCourse(db *gorm.DB, queryParams *QuerParamsCourse) ([]models.Course, error) {
 	var courses []models.Course
 	var result *gorm.DB
+
+	var preloadConditions string
+	if !queryParams.LoadDrafts {
+		preloadConditions = "Published=true"
+	}
+
 	if queryParams.LoadPosts {
-		result = db.Preload("Sections.Posts").Preload("Sections").Preload("Categories").Find(&courses)
+		result = db.Preload("Sections.Posts", preloadConditions).
+			Preload("Sections", preloadConditions).
+			Preload("Categories").
+			Where(preloadConditions).
+			Find(&courses)
 	} else if queryParams.LoadSections {
-		result = db.Preload("Sections").Preload("Categories").Find(&courses)
+		result = db.Preload("Sections", preloadConditions).
+			Preload("Categories").
+			Where(preloadConditions).
+			Find(&courses)
 	} else {
-		result = db.Preload("Categories").Find(&courses)
+		result = db.Preload("Categories").
+			Where(preloadConditions).
+			Find(&courses)
 	}
 
 	if result.Error != nil {
@@ -53,11 +68,20 @@ func FindAllCourse(db *gorm.DB, queryParams *QuerParamsCourse) ([]models.Course,
 func FindCourseByID(db *gorm.DB, courseID string, queryParams *QuerParamsCourse) (models.Course, error) {
 	var course models.Course
 	var result *gorm.DB
+	var preloadConditions string
+	if !queryParams.LoadDrafts {
+		preloadConditions = "Published=true"
+	}
 	if queryParams.LoadPosts {
-		result = db.Preload("Sections.Posts").Preload("Sections").Preload("Categories").First(&course, courseID)
+		result = db.Preload("Sections.Posts", preloadConditions).
+			Preload("Sections", preloadConditions).
+			Preload("Categories").
+			First(&course, courseID)
 		course = sortSectionsInCourse(course)
 	} else if queryParams.LoadSections {
-		result = db.Preload("Sections").Preload("Categories").First(&course, courseID)
+		result = db.Preload("Sections", preloadConditions).
+			Preload("Categories").
+			First(&course, courseID)
 		course = sortSectionsInCourse(course)
 	} else {
 		result = db.Preload("Categories").First(&course, courseID)
@@ -74,11 +98,22 @@ func FindCourseByID(db *gorm.DB, courseID string, queryParams *QuerParamsCourse)
 func FindCourseBySlug(db *gorm.DB, slug string, queryParams *QuerParamsCourse) (models.Course, error) {
 	var course models.Course
 	var result *gorm.DB
+	var preloadConditions string
+	if !queryParams.LoadDrafts {
+		preloadConditions = "Published=true"
+	}
 	if queryParams.LoadPosts {
-		result = db.Preload("Sections.Posts").Preload("Sections").Preload("Categories").Where(&models.Course{Slug: slug}).First(&course)
+		result = db.Preload("Sections.Posts", preloadConditions).
+			Preload("Sections", preloadConditions).
+			Preload("Categories").
+			Where(&models.Course{Slug: slug}).
+			First(&course)
 		course = sortSectionsInCourse(course)
 	} else if queryParams.LoadSections {
-		result = db.Preload("Sections").Preload("Categories").Where(&models.Course{Slug: slug}).First(&course)
+		result = db.Preload("Sections", preloadConditions).
+			Preload("Categories").
+			Where(&models.Course{Slug: slug}).
+			First(&course)
 		course = sortSectionsInCourse(course)
 	} else {
 		result = db.Preload("Categories").Where(&models.Course{Slug: slug}).First(&course)
@@ -103,12 +138,23 @@ func EditCourseByID(db *gorm.DB, courseDTO *dto.EditCourseDTO, courseID string) 
 	course.Title = courseDTO.Title
 	course.Slug = slug.Make(courseDTO.Title)
 	course.Cost = courseDTO.Cost
+	course.Published = courseDTO.Publish
 
 	if courseDTO.HTML != "" && courseDTO.Markdown != "" {
 		course.MarkDown = utils.ToStringPtr(courseDTO.Markdown)
 		course.HTML = utils.ToStringPtr(courseDTO.HTML)
 	}
 	course.DescShort = courseDTO.DescShort
+	db.Model(&course).Association("Categories").Clear()
+	var cats []models.Category
+	for _, newCat := range courseDTO.Categories {
+		cats = append(cats, models.Category{
+			Name: newCat.Label,
+			Slug: slug.Make(newCat.Label),
+		})
+	}
+
+	course.Categories = cats
 
 	result := db.Save(&course)
 	if result.Error != nil {
@@ -177,6 +223,7 @@ func EditSectionByID(db *gorm.DB, sectionDTO *dto.EditSectionDTO, sectionID stri
 	section.Title = sectionDTO.Title
 	section.Description = sectionDTO.Description
 	section.ExpectedTime = sectionDTO.ExpectedTime
+	section.Published = sectionDTO.Publish
 
 	result = db.Save(&section)
 	if result.Error != nil {

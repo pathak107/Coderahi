@@ -34,6 +34,8 @@ const SectionForm = () => {
                     }}
                 >
                 </textarea>
+                <span className="label-text">Publish</span> 
+                <input type="checkbox" className="toggle" checked={state.published} onClick={()=>{actions.setPublished(!state.published)}}/>
             </form>
             <a className="btn"
                 onClick={() => {
@@ -42,6 +44,7 @@ const SectionForm = () => {
                             section_id: state.sectionID,
                             title: state.title,
                             desc: state.desc,
+                            publish: state.published 
                         }, "edit-section")
                     } else {
                         mutation.mutate({

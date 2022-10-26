@@ -42,6 +42,8 @@ func EditPost(db *gorm.DB, postDTO *dto.EditPostDTO, postID string) error {
 		return err
 	}
 
+	post.Published = postDTO.Publish
+
 	if postDTO.Title != "" {
 		post.Title = postDTO.Title
 		post.Slug = slug.Make(postDTO.Title)

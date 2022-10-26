@@ -94,7 +94,7 @@ func (c *Cache) RemoveMultiple(keys []string) {
 
 func (c *Cache) Purge() {
 	mp := c.m
-	for key, _ := range mp {
+	for key := range mp {
 		c.Remove(key)
 	}
 }

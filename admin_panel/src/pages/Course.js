@@ -2,7 +2,7 @@ import CourseForm from "../components/Course/CourseForm";
 import CourseSidebar from "../components/Course/CourseSideBar/CourseSidebar";
 import MainContent from "../components/MainContent";
 import { useParams } from 'react-router-dom';
-import { getCourseByIDWithSectionsAndPosts, getPostByID } from '../services/api_service';
+import { getAllCategories, getCourseByIDWithSectionsAndPosts, getPostByID } from '../services/api_service';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import SectionContextProvider from "../context/sectionContext";
 import PostContextProvider from "../context/postContext";
@@ -14,12 +14,13 @@ function Course() {
 
     const courseQuery = useQuery([`getOneCourse`], () => getCourseByIDWithSectionsAndPosts(course_id), {cacheTime: 0})
     const postQuery = useQuery([`getOnePost-${post_id}`], () => getPostByID(post_id), {enabled: post_id? true: false, cacheTime:0})
+    const catQuery = useQuery([`getAllCategories`], () => getAllCategories())
 
 
-    if (courseQuery.isLoading ||(post_id && postQuery.isLoading)) {
+    if (courseQuery.isLoading || catQuery.isLoading ||(post_id && postQuery.isLoading)) {
         return (
             <>
-                <div className="radial-progress" style={{ "--value": 70 }}>70%</div>
+                <div className="radial-progress" />
             </>
         )
     }
@@ -42,7 +43,7 @@ function Course() {
                     </EditorContextProvider>
                     :
                     <EditorContextProvider initialEditorData={courseQuery.data.data.data.course.MarkDown}>
-                        <CourseForm course={courseQuery.data.data.data.course} />
+                        <CourseForm course={courseQuery.data.data.data.course} cats={catQuery.data.data.data.categories}/>
                     </EditorContextProvider> 
                 }
                 

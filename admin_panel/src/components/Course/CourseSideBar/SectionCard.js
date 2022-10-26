@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateOrderOfPost } from '../../../services/api_service';
 
 const SectionCard = ({ section, course_id, provided, innerRef, isDropDownOpen }) => {
+    console.log(isDropDownOpen)
     const [dropDownOpen, setDropDownOpen] = useState(isDropDownOpen)
     const postModalCtx = useContext(PostContext)
     const confirmModalCtx = useContext(ConfirmModalCtx)
@@ -79,6 +80,7 @@ const SectionCard = ({ section, course_id, provided, innerRef, isDropDownOpen })
                                 sectionModalCtx.actions.setSectionID(section.ID)
                                 sectionModalCtx.actions.setTitle(section.Title)
                                 sectionModalCtx.actions.setDesc(section.Description)
+                                sectionModalCtx.actions.setPublished(section.Published)
                                 sectionModalCtx.actions.openModal()
                             }}>
                             <FaEdit/>

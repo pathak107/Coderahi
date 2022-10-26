@@ -76,6 +76,12 @@ func main() {
 
 			course.POST("/upload/image/:course_id", h.UploadImageHandler)
 		}
+
+		cat := v1.Group("/category")
+		{
+			cat.Use(middleware.CORSMiddleware())
+			cat.GET("", h.FindAllCategories)
+		}
 	}
 
 	r.Run(":8080")

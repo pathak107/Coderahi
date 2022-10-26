@@ -11,6 +11,7 @@ const SectionContextProvider = ({children}) => {
     const [sectionID, setSectionID]=useState(null)
     const [title, setTitle]=useState("")
     const [desc, setDesc]=useState("")
+    const [published, setPublished]=useState(false)
 
     const queryClient = useQueryClient()
     const mutation = useMutation(deleteSection, {
@@ -38,8 +39,8 @@ const SectionContextProvider = ({children}) => {
     }
 
     const providerVal={
-        state:{isOpen, edit, courseID, sectionID, title, desc},
-        actions:{toggleModal, openModal, closeModal, setEdit, setCourseID, setSectionID, setTitle, setDesc, deleteSectionAct},
+        state:{isOpen, edit, courseID, sectionID, title, desc, published},
+        actions:{toggleModal, openModal, closeModal, setEdit, setCourseID, setSectionID, setTitle, setDesc, deleteSectionAct, setPublished},
     }
     return ( 
         <SectionContext.Provider value={providerVal}>

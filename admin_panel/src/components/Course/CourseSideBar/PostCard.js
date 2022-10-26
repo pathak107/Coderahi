@@ -38,6 +38,7 @@ const PostCard = ({course_id, post, provided, innerRef}) => {
                             postModalCtx.actions.setPostID(post.ID)
                             postModalCtx.actions.setTitle(post.Title)
                             postModalCtx.actions.setDesc(post.Description)
+                            postModalCtx.actions.setPublished(post.Published)
                             postModalCtx.actions.openModal()
                         }}
                     >

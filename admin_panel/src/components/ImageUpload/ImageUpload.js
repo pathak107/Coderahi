@@ -35,16 +35,13 @@ const ImageUpload = ({imageURL, course_id}) => {
     }
 
     return (
-        <div className="card card-compact w-96 bg-base-100 shadow-xl">
+        <div className="card card-compact w-96 bg-base-100 shadow-xl" onClick={()=>{
+            fileInput.current.click()
+        }}>
             <figure><img src={url} alt="Course Image" /></figure>
             <div className="card-body">
                 <div className="card-actions justify-end">
                 <input type="file" name="file" accept="image/*" hidden ref={fileInput} onChange={uploadImageToServer}/>
-                <button className="btn btn-sm" onClick={()=>{
-                    fileInput.current.click()
-                }}>
-                    Upload
-                </button>
                 </div>
             </div>
         </div>
