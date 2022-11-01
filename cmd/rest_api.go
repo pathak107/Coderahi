@@ -2,7 +2,10 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"os"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/pathak107/coderahi-learn/pkg/handler"
@@ -27,9 +30,13 @@ import (
 
 // @securityDefinitions.basic  BasicAuth
 func main() {
-	err := godotenv.Load("../.env")
+	err := godotenv.Load("./.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
+	}
+
+	if os.Getenv("GIN_MODE") == "release" {
+		gin.SetMode(gin.ReleaseMode)
 	}
 	db, err := services.NewDatabaseService()
 	if err != nil {
@@ -41,14 +48,13 @@ func main() {
 	r := gin.Default()
 
 	r.Use(middleware.CORSMiddleware())
-	r.Static("/static/public/", "../public/")
+	r.Use(static.Serve("/admin", static.LocalFile("./", false)))
+	r.Use(static.Serve("/static/public", static.LocalFile("./images", false)))
 	r.Use(middleware.ErrorHandler())
 	v1 := r.Group("/api/v1")
 	{
-		v1.Use(middleware.CORSMiddleware())
 		post := v1.Group("/post")
 		{
-			post.Use(middleware.ErrorHandler())
 			post.GET("", h.FindAllPosts)
 			post.GET("/:post_id", h.FindPostByID)
 			post.GET("/slug/:slug", h.FindPostBySlug)
@@ -61,7 +67,6 @@ func main() {
 
 		course := v1.Group("/course")
 		{
-			course.Use(middleware.CORSMiddleware())
 			course.GET("", h.FindAllCourses)
 			course.GET("/:course_id", h.FindCourseByID)
 			course.GET("/slug/:slug", h.FindCourseBySlug)
@@ -79,10 +84,14 @@ func main() {
 
 		cat := v1.Group("/category")
 		{
-			cat.Use(middleware.CORSMiddleware())
 			cat.GET("", h.FindAllCategories)
 		}
 	}
+
+	r.LoadHTMLFiles("index.html")
+	r.GET("/admin/*any", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.html", nil)
+	})
 
 	r.Run(":8080")
 }

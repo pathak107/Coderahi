@@ -2,11 +2,8 @@
   "name": "admin_panel",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/admin",
   "dependencies": {
-    "@bomdi/codebox": "^2.0.0",
-    "@calumk/editorjs-codeflask": "^1.0.9",
-    "@editorjs/editorjs": "^2.25.0",
-    "@editorjs/header": "^2.6.2",
     "@flaticon/flaticon-uicons": "^1.7.0",
     "@tanstack/react-query": "^4.10.3",
     "@tanstack/react-query-devtools": "^4.11.0",

@@ -39,7 +39,9 @@ const router = createBrowserRouter([
     path: "/course/:course_id/post/:post_id",
     element: <><Header/><Course /></>,
   },
-]);
+],{
+  basename:"/admin"
+});
 
 function App() {
 

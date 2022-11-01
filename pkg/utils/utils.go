@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"log"
 	"path/filepath"
 	"runtime"
 )
@@ -40,6 +41,7 @@ func ToJsonString(key string, data interface{}) string {
 
 func getCurrDir() string {
 	_, filename, _, _ := runtime.Caller(0)
+	log.Println(filepath.Dir(filename))
 	return filepath.Dir(filename)
 }
 
